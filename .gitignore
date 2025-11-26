@@ -1,0 +1,8 @@
+grid_network/grid_fcd.out.xml
+grid_network/netstate.xml
+grid_network_fed/grid_fcd.out.xml
+grid_network_fed/netstate.xml
+grid_network/.ipynb_checkpoints/grid_fcd_new-checkpoint.xml
+grid_network_fed/grid_fcd_new.xml
+*.xml.bak
+

@@ -1,0 +1,664 @@
+FedG-ELITE: Distributed Intelligence
+Evolution for Software-Deﬁned Vehicular
+Networks
+Research Report on Enhanced Routing Protocol Based on Federated
+Graph Learning
+Architecture Evolution Based on ELITE (IEEE TMC 2023)
+November 19, 2025
+Abstract
+With the rapid development of Intelligent Transportation Systems (ITS), Ve-
+hicular Networks (VNs) have become the core nervous system connecting vehicles,
+road infrastructure, and pedestrians. To address the challenges posed by high ve-
+hicle dynamics, frequent network topology changes, and diverse Quality of Service
+(QoS) requirements, the Software-Deﬁned Vehicular Network (SDVN) architecture
+has emerged. SDVN achieves centralized control and global optimization of the
+network by decoupling the control plane from the data plane. The existing ELITE
+scheme has alleviated traditional routing problems to a certain extent by introduc-
+ing digital twins and hierarchical routing.
+However, ELITE is still limited by the scalability dilemma of tabular reinforce-
+ment learning, the lack of generalization ability to new topologies, and the data
+privacy and bandwidth bottlenecks caused by centralized training.
+Addressing
+these limitations, this report proposes a comprehensively upgraded architecture
+schemeFedG-ELITE (Federated Graph-ELITE). This scheme retains the hierarchi-
+cal routing and multi-objective fuzzy fusion framework of ELITE but introduces
+Graph Neural Networks (GNN) to reconstruct state representation, utilizes Deep
+Reinforcement Learning (DRL) to replace tabular learning, and adopts a Federated
+Learning (FL) architecture to implement distributed collaborative training. This
+paper details the system architecture of FedG-ELITE, the mathematical modeling
+based on GraphSAGE, the workﬂow of the federated graph learning algorithm, and
+performance expectations, aiming to provide theoretical support for the next gener-
+ation of highly reliable and privacy-preserving intelligent vehicular network routing
+protocols.
+Index TermsSoftware-Deﬁned Vehicular Network (SDVN), Federated Learning, Graph
+Neural Network (GNN), Deep Reinforcement Learning, Digital Twin, ELITE, Routing
+Protocol.
+1
+
+
+1
+Introduction and System Background Analysis
+1.1
+Research Background
+With the rapid development of Intelligent Transportation Systems (ITS), Vehicular Net-
+works (VNs) have become the core nervous system connecting vehicles, road infrastruc-
+ture, and pedestrians. To address the challenges posed by high vehicle dynamics, fre-
+quent network topology changes, and diverse Quality of Service (QoS) requirements, the
+Software-Deﬁned Vehicular Network (SDVN) architecture has emerged. SDVN achieves
+centralized control and global optimization of the network by decoupling the control plane
+from the data plane, providing new opportunities to solve local optimum and link breakage
+problems in traditional distributed routing protocols.
+1.2
+Status of ELITE Scheme
+In this ﬁeld, the ELITE (Intelligent Digital Twin Hierarchical Routing) scheme repre-
+sents the current state-of-the-art. This scheme innovatively introduces Digital Twin (DT)
+technology to construct a virtual network space within the SDVN controller. It utilizes
+Multi-Agent Reinforcement Learning (RL) to parallelly train policies for diﬀerent routing
+metrics (such as delay, packet loss rate, hop count) and performs multi-objective fusion
+through Fuzzy Logic. ELITE adopts a hierarchical routing structure, where the controller
+is responsible for macroscopic path planning based on junction sequences, while vehicles
+execute location-based greedy forwarding within road segments.
+1.3
+Core Technical Bottlenecks of ELITE Architecture
+However, a deep analysis of the ELITE architecture reveals that although it alleviates the
+computational pressure of traditional SDN routing to some extent, it is still constrained by
+the following core technical bottlenecks, which are particularly prominent in large-scale,
+ultra-dense future urban traﬃc scenarios:
+1. The Curse of Dimensionality in Tabular Reinforcement Learning: ELITE
+employs tabular Q-learning for policy training. In tabular RL, the state space typ-
+ically consists of discrete junction IDs. As the scale of the urban road network
+expands, the number of state-action pairs grows exponentially. This results in an
+extremely large Q-table that is diﬃcult to converge within a limited time and im-
+poses tremendous pressure on the controller’s storage resources.
+2. Lack of Generalization Ability: Tabular methods lack inductive bias.
+The
+congestion avoidance strategy learned by an agent at a speciﬁc junction cannot be
+transferred to other junctions with similar topological structures. ELITE relies on
+speciﬁc ID records; once the road network topology undergoes minor changes (such
+as new roads or construction), the old Q-values cannot correspond to the new states,
+often requiring the entire model to be retrained, which is extremely ineﬃcient in
+the rapidly changing vehicular network environment.
+3. Data Privacy and Bandwidth Bottlenecks in Centralized Training: ELITE
+relies on the full mapping of the physical world by the digital twin, which means
+that underlying vehicles and Road-Side Units (RSUs) need to continuously upload
+raw sensing data (position, speed, neighbor lists) to the controller. This centralized
+2
+
+
+data processing mode not only consumes valuable Vehicle-to-Infrastructure (V2I)
+wireless bandwidth but also triggers serious user privacy leakage risks, such as
+vehicle trajectory tracking and user behavior proﬁling.
+1.4
+Proposed Solution: FedG-ELITE
+Addressing the aforementioned limitations, this report proposes a comprehensively up-
+graded architecture scheme, FedG-ELITE (Federated Graph-ELITE). This scheme aims
+to perform the following core improvements while retaining ELITE’s excellent "hierarchi-
+cal routing" and "multi-objective fuzzy fusion" framework:
+1. Introducing Graph Neural Networks (GNN): Reconstruct state representa-
+tion and utilize its ability to represent non-Euclidean data to solve the state space
+explosion problem.
+2. Deep Reinforcement Learning (DRL): Utilize Deep Q-Network to replace tab-
+ular learning to improve ﬁtting capability.
+3. Federated Learning (FL): Implement distributed collaborative training in the
+architecture, moving "training" down to the edge to achieve data privacy protection.
+2
+Architecture Evolution: From Centralized Digital
+Twin to Federated Graph Intelligence
+The core idea of FedG-ELITE is to move the "training" process of routing intelligence down
+to the edge (vehicles and RSUs), while retaining "aggregation" and "global optimization"
+in the digital twin control plane. This architectural shift not only solves privacy issues
+but also leverages the powerful representation capability of Graph Neural Networks for
+non-Euclidean spatial data. The FedG-ELITE architecture is divided into three logical
+planes.
+2.1
+Physical Sensing and Execution Plane (Federated Clients)
+Vehicle nodes are no longer simple data senders but Federated Learning Clients with
+computing capabilities. Their main responsibilities include:
+• Graph Data Construction: Vehicles sense the local traﬃc environment through
+V2V/V2I communication and model it as a Local Subgraph. Nodes represent ve-
+hicles or junctions, edges represent communication links, and node features include
+speed, queue length, historical throughput, etc.
+• Local Model Training: Each client runs the GNN-DRL model for training using
+locally collected trajectory and interaction data.
+GNN is used to extract local
+topological features, and DRL is used to decide the next-hop routing.
+• Parameter Upload: After training, clients only upload model parameters (gradi-
+ents or weights ∆) to the RSU or controller, while raw traﬃc data remains local,
+strictly following the principle of "data stays, model moves."
+3
+
+
+2.2
+Edge Computing Plane (Edge Aggregation)
+Road-Side Units (RSUs) act as an intermediate aggregation layer, responsible for process-
+ing model updates from vehicles within their coverage.
+• Regional Aggregation: RSUs perform preliminary aggregation (e.g., weighted
+averaging) on model parameters uploaded by vehicles within their jurisdiction to
+reduce traﬃc back to the core network and alleviate backbone network pressure.
+• Feature Enhancement: RSUs leverage their ﬁxed geographical location advan-
+tages to provide passing vehicles with macroscopic features at the junction level
+(e.g., historical congestion index) to assist vehicles in constructing more complete
+state graphs.
+2.3
+Digital Twin Control Plane (Federated Server & Global
+Twin)
+The digital twin maintained by the SDVN controller evolves into the central Parameter
+Server for federated learning.
+• Global Aggregation (FedAvg/FedProx): Receives local model updates from
+RSUs or vehicles and executes global aggregation algorithms to generate a general
+routing model capable of adapting to network-wide features.
+• Multi-Objective Fusion (Legacy Integration): FedG-ELITE retains the fuzzy
+logic module of ELITE. The digital twin maintains multiple global GNN models
+trained for diﬀerent optimization objectives (high reliability, low latency, load bal-
+ancing). When there is a data transmission request, the controller uses fuzzy logic
+to select the most appropriate global model parameters for distribution based on
+the service type (e.g., safety messages, entertainment streaming), or calculates the
+macroscopic path directly at the controller end.
+• Model Distribution and Synchronization:
+Broadcasts the updated global
+model parameters back to the physical network to ensure continuous evolution.
+3
+Mathematical Modeling: Graph-Driven Deep Re-
+inforcement Learning and Federated Optimization
+This section will detail the key mathematical models in FedG-ELITE, including the con-
+struction of dynamic graphs, GraphSAGE state extraction, the DQN decision process,
+and the federated aggregation mechanism.
+3.1
+Dynamic Graph Formulation
+We abstract the vehicular network as a time-varying dynamic directed graph Gt = (Vt, Et).
+• Node Set: Contains two types of nodes: junction nodes J = {j1, j2, ..., jM} and
+vehicle nodes V = {v1, v2, ..., vN}. At the macroscopic routing level, we primarily
+focus on junction nodes and their connectivity.
+4
+
+
+• Edge Set: Represents the connectivity of physical road segments. If there is a
+direct road connection between junction i and j, then an edge eij ∈Et exists.
+• Feature Matrix X: Each node possesses a feature vector x(t)
+i
+∈RF, capturing
+real-time traﬃc status:
+x(t)
+i
+= [ρi(t), vi(t), Qi(t), PDRhist
+i
+(t), τi(t)]⊤
+(1)
+Where:
+• ρi(t): Vehicle density within the junction coverage (normalized).
+• vi(t): Average vehicle speed.
+• Qi(t): Packet queue length at the current junction.
+• PDRhist
+i
+(t): Average delivery ratio within the historical window.
+• τi(t): Average traversal time of the road segment (used for delay estimation).
+3.2
+Inductive State Representation Based on GraphSAGE
+To address the issue that tabular states in ELITE cannot generalize, we introduce Graph-
+SAGE (Graph Sample and Aggregate). Unlike traditional Graph Convolutional Networks
+(GCN), GraphSAGE is inductive; it learns a function to aggregate neighbor features rather
+than learning ﬁxed embeddings for speciﬁc nodes, enabling the model to handle unseen
+network topologies.
+For any junction node v, GraphSAGE generates its embedding vector h(K)
+v
+through K
+layers of aggregation operations. At the k-th layer (k ∈{1, ..., K}):
+1) Neighbor Aggregation: Collect information from neighbor nodes N(v). Con-
+sidering the diﬀerences in link quality in vehicular networks, we adopt a weighted mean
+aggregator:
+h(k)
+N(v) = AGGREGATEk({h(k−1)
+u
+, ∀u ∈N(v)}) =
+X
+u∈N(v)
+αvuW (k)
+poolh(k−1)
+u
++ b(k)
+pool
+(2)
+Where αvu is the attention coeﬃcient (can be calculated by the Graph Attention
+Network mechanism, reﬂecting link stability), and Wpool and bpool are trainable parameters.
+2) Feature Update: Concatenate the aggregated neighbor features with the node’s
+own features and update the node representation through a non-linear transformation:
+h(k)
+v
+= σ(W (k) · CONCAT(h(k−1)
+v
+, h(k)
+N(v)))
+(3)
+Where σ typically uses the ReLU activation function, and W (k) is the weight matrix
+of the k-th layer. The ﬁnally generated embedding vector zv = h(K)
+v
+fuses the node’s own
+traﬃc attributes and topological structure information within a K-hop range, serving as
+the high-dimensional state input for reinforcement learning.
+5
+
+
+3.3
+Deep Q-Network (DQN) Routing Decision Model
+After obtaining the state representation z, we use a Deep Q-Network (DQN) to replace
+the Q-table in ELITE.
+• State Space S: st = zcurrent ⊕zdestination, i.e., the concatenation of the graph
+embedding vectors of the current junction and the destination junction. This enables
+the policy to perceive not only the local environment but also to be "goal-oriented."
+• Action Space A: at ∈N(current), i.e., selecting the next junction as a relay.
+• Q-Value Function and Loss Function: The DQN network Q(s, a; θ) receives the
+state vector and outputs Q-values corresponding to all selectable neighbor junctions.
+The parameters θ here include the parameters of GraphSAGE and the subsequent
+fully connected layers (MLP).
+L(θ) = E(s,a,r,s′)∼D[(r + γ max
+a′
+Q(s′, a′; θ−) −Q(s, a; θ))2]
+(4)
+Where θ−represents the target network parameters, updated every ﬁxed number of
+steps to ensure training stability.
+3.4
+Multi-Objective Reward Shaping
+To reproduce and enhance the multi-objective characteristics of ELITE, we designed a
+parameterized hybrid reward function.
+Although ELITE uses independent agents, in
+FedG-ELITE, we can train model variants for diﬀerent QoS requirements by adjusting
+reward weights. Deﬁne the comprehensive reward Rt:
+Rt = ω1 · RPDR + ω2 · RDelay + ω3 · RLoad + ω4 · RHop
+(5)
+The sub-rewards are deﬁned as follows:
+• Packet Delivery Ratio Reward (RPDR): If the packet successfully reaches the
+destination, reward +Rsucc; if lost due to TTL expiration, penalize −Rfail. A small
+positive incentive is given for each successful forwarding hop.
+• Delay Reward (RDelay): RDelay = −(tarrival −tsent), or use a penalty based on
+link quality R = −(Queue_Delay + Transmission_Delay).
+• Load Balancing Reward (RLoad): RLoad = 1 −Qnext
+Qmax , encouraging the selection
+of idle junctions.
+• Hop Count Reward (RHop): Fixed penalty −C for each hop, prompting the agent
+to ﬁnd the shortest path.
+Reward Scale Alignment and Quantile Adaptation: To avoid a single reward
+term (e.g., millisecond-level delay values) dominating the entire reward function, it is
+necessary to perform normalization and weight recalibration for each component
+RDelay, RLoad, RHop. For example, map RDelay to the [−1, 1] interval. Furthermore, ad-
+dressing the ﬁxed-intersection fuzzy membership functions used in ELITE (Figure 4a), this
+6
+
+
+scheme adopts a Quantile Adaptation mechanism, dynamically adjusting the thresh-
+old for Good/Medium/Bad classiﬁcations based on online collected reward distribution
+statistics (e.g., P20, P50, P80 quantiles). It is also recommended to provide reasonable or-
+ders of magnitude and sensitivity analysis for α, β (e.g., parameter scanning within the
+range [0.1, 0.9]) to ensure model adaptability to diﬀerent network conditions.
+By adjusting the weight vector ω = [ω1, ω2, ω3, ω4], we can generate various policy
+models biased towards High Reachability First (HRF), Low Delay First (LDF), or Load
+Balancing First (LBF) for subsequent invocation by the fuzzy logic module.
+4
+Federated Graph Learning Algorithm Design
+The core innovation of FedG-ELITE lies in utilizing a federated learning framework to
+train the aforementioned GNN-DRL models. Due to the Non-Independent and Identically
+Distributed (Non-IID) nature of the vehicular network environment (e.g., traﬃc patterns
+in city centers vs. suburbs are vastly diﬀerent), the standard FedAvg algorithm may face
+convergence diﬃculties. Therefore, we introduce an improved aggregation mechanism.
+We adopt the combined framework of GraphSAGE + DQN + FedProx to approximate
+the optimal policy. This class of deep federated reinforcement learning methods has been
+widely veriﬁed in related works. However, due to the use of nonlinear function approx-
+imation and dynamic graph modeling, we mainly evaluate its performance and stability
+through extensive simulation experiments, rather than pursuing a rigorous convergence
+proof.
+4.1
+Federated Learning Workﬂow
+The system consists of N clients (RSUs/Vehicles) and a central server (DT Controller).
+The global model parameters are denoted as Wg, and the local parameters of the i-th
+client are denoted as Wi.
+1) Step 1: Model Distribution: At the beginning of communication round t, the
+server broadcasts the current global model Wt
+g to the selected subset of clients Kt.
+2) Step 2: Local Training: Each client i ∈Kt uses locally collected trajectory
+data Di to train the model for E epochs. To prevent the local model from overﬁtting on
+heterogeneous data and deviating from the global optimum, we introduce the FedProx
+regularization term in the loss function:
+min
+Wi Li(Wi) + µ
+2||Wi −Wt
+g||2
+(6)
+Where µ is the regularization coeﬃcient, limiting the local update step size.
+3) Step 3: Model Upload and Aggregation: Clients upload the updated param-
+eters Wt+1
+i
+. The server performs weighted aggregation. Considering diﬀerences in RSU
+coverage and traﬃc ﬂow, the aggregation weight pi depends not only on data volume but
+also combines the node’s topological importance (Degree Centrality) or traﬃc load.
+Aggregation Normalization and Federated Frequency: The speciﬁc aggrega-
+tion formula should be deﬁned as:
+W t+1
+g
+=
+X
+i∈Kt
+pi
+P
+j∈Kt pj
+W t+1
+i
+(7)
+7
+
+
+Where the calculation of weight pi is recommended to combine data volume and central-
+ity, and undergo normalization/logarithmic transformation, i.e., pi = α log(|Di|) +
+βNorm(Centralityi), to prevent nodes with massive data from dominating the model. In
+addition, addressing the high-frequency communication overhead in vehicular networks,
+the upload frequency strategy is clariﬁed as "upload once every T seconds or every N
+steps," and an adaptive frequency reduction mechanism is introduced (reducing up-
+load frequency when the model tends to converge). Meanwhile, it is recommended to use
+Quantization or Sparsiﬁcation techniques to compress uploaded gradient parameters,
+further reducing bandwidth consumption.
+4.2
+Core Algorithm Pseudocode
+To clearly demonstrate the execution logic of FedG-ELITE, detailed pseudocode for the
+core algorithm is provided below.
+4.3
+Secure Aggregation and Diﬀerential Privacy (SA / DP)
+To further complete the privacy threat model, regarding sensitive trajectory data, this
+scheme suggests adding a Secure Aggregation (SA) protocol to ensure the server can
+only see the aggregated gradients and cannot infer individual user updates. Simultane-
+ously, a Diﬀerential Privacy (DP) option is provided, adding Gaussian noise before
+uploading gradients to defend against privacy threats such as Membership Inference At-
+tacks.
+5
+System Implementation and Deployment Consid-
+erations
+5.1
+Decoupling of Training and Inference
+In FedG-ELITE, Training and Inference are performed asynchronously.
+• Training: A periodic background process. Vehicles utilize onboard computing units
+for local Epoch training when idle or charging (for electric vehicles) and upload
+updates when the network is idle.
+• Inference: A real-time foreground process. When a data packet arrives, the vehicle
+directly calls the current version of the GNN-DQN model, outputting the next-hop
+decision in milliseconds without incurring extra communication latency.
+5.2
+Integration with Fuzzy Logic
+A highlight of the original ELITE scheme is the use of fuzzy logic to handle multi-objective
+conﬂicts. FedG-ELITE does not discard this module but upgrades its input.
+• Original Input: Numerical values in the Q-table (Q-values).
+• New Input: Action probability distributions (Softmax Probability) output by mul-
+tiple specialized models (PDR model, Delay model).
+8
+
+
+Algorithm 1 FedG-ELITE Client Local Training (ClientUpdate)
+Require: Global model weights Wglobal, Local dataset Dk (Replay Buﬀer), Learning rate
+η, Regularization coeﬃcient µ
+Ensure: Updated local weights Wk
+1: Function ClientUpdate (Wglobal):
+2: Initialize local model Wk ←Wglobal
+3: // Data Collection Phase (Running Continuously)
+4: Observe current graph state Gt = (V, E) and node features Xt
+5: GNN Forward Pass: Generate embeddings
+6: Hv ←GraphSAGE_Forward (Gt, Xt, Wk)
+7: St ←Concatenate (Hcurrent, Hdest)
+8: DQN Action Selection (Epsilon-Greedy):
+9: if Random () < ϵ then
+10:
+at ←Random_Neighbor()
+11: else
+12:
+Qvalues ←DQN_Forward (St, Wk)
+13:
+at ←ArgMax(Qvalues)
+14: end if
+15: Execute at, observe reward rt, new state St+1
+16: Store transition (St, at, rt, St+1) into Dk
+17: // Training Phase
+18: for epoch = 1 to E do
+19:
+Sample Random Batch (Dk)
+20:
+Loss ←0
+21:
+for each transition (s, a, r, snext) in Batch do
+22:
+// Target Q-value Calculation
+23:
+Qpred ←DQN_Forward (s, Wk) [a]
+24:
+Qtarget ←r + γ max( DQN_Forward (snext, Wk.target))
+25:
+Lmse ←HuberLoss (Qpred, Qtarget)
+26:
+// Loss with FedProx Regularization Term
+27:
+Lprox ←µ
+2||Wk −Wglobal||2
+28:
+Loss ←Loss + Lmse + Lprox
+29:
+end for
+30:
+Update Wk using Adam(∇Loss)
+31: end for
+32: return Wk
+9
+
+
+Algorithm 2 FedG-ELITE Server Global Aggregation and Fusion (ServerExec)
+Require: Client set K, Rounds T0, Fusion rules Ft
+Ensure: Deployed Policy
+1: Initialize global models for diﬀerent objectives: WPDR, WDelay, WLoad, WHop
+2: for round t = 1 to T0 do
+3:
+// Parallel Federated Training for each objective model
+4:
+for each Obj in {PDR, Delay, Load, Hop} do
+5:
+Select active client subset St ⊂K
+6:
+Broadcast WObj to St
+7:
+Received_Updates ←[]
+8:
+Total_Weight ←0
+9:
+for client k in St (Parallel Execution) do
+10:
+Wk ←k.ClientUpdate (WObj)
+11:
+// Calculate Aggregation Weight
+12:
+pk ←CalculateWeight (k.Traﬃc Load, k.Graph Degree)
+13:
+Received_Updates.append((Wk, pk))
+14:
+Total_Weight ←Total_Weight + pk
+15:
+end for
+16:
+// Weighted Aggregation
+17:
+Wnew
+Obj ←P(pk · Wk)/Total_Weight
+18:
+WObj ←Wnew
+Obj
+19:
+end for
+20: end for
+21: Policy Deployment (Integration with ELITE Fuzzy Logic):
+22: Function HandleRouting Request(Request_Type, Source, Dest):
+23: ProbPDR ←GNN_Infer(Source, Dest, WPDR)
+24: ProbDelay ←GNN_Infer(Source, Dest, WDelay)
+25: ProbLoad ←GNN_Infer(Source, Dest, WLoad)
+26: // Fuzzy Logic Fusion
+27: Final_Score ←FuzzyInference (ProbPDR, ProbDelay, ProbLoad, Request_Type)
+28: return ArgMax(Final_Score)
+10
+
+
+For example, for the next hop, the PDR model predicts a success probability of 0.9
+(High), and the Delay model predicts a congestion probability of 0.8 (High). The fuzzy
+controller synthesizes the ﬁnal score of the node based on the rules of the current ser-
+vice "video streaming" (insensitive to delay but requires high throughput). This design
+preserves the ﬂexibility of ELITE’s service awareness.
+Output Calibration and Data-Driven Fine-tuning: Before feeding Softmax
+probabilities into the fuzzy module, it is recommended to perform Temperature Scaling
+to solve the "Over-conﬁdent" problem of neural network output probabilities. Further-
+more, it is suggested to change the original ﬁxed fuzzy rules to Data-Driven Fine-
+tuning, where the weight parameters of fuzzy rules can be adaptively adjusted with
+changes in the network environment, rather than being hard-coded.
+5.3
+Inference Overhead Budget
+To ensure the online availability of the scheme, speciﬁc overhead budgets must be pro-
+vided. It is recommended to set: GNN layers K ≤2 or 3, neighbor sampling count
+(fan-out) approximately 10, and embedding dimension controlled within 64-128 dimen-
+sions. Model size should be controlled at the MB level, and vehicle-side forward inference
+time should meet the real-time requirements of vehicular networks (e.g., < 20ms). Speciﬁc
+target values versus measured values should be provided to demonstrate feasibility.
+6
+Simulation Veriﬁcation Strategy
+To verify the eﬀectiveness of FedG-ELITE, it is recommended to use SUMO (Simula-
+tion of Urban Mobility) to generate realistic urban traﬃc ﬂows, combined with NS-3 or
+OMNET++ for network communication simulation.
+• Datasets: Use real urban road network maps (e.g., Manhattan or San Francisco
+maps exported from OpenStreetMap).
+• Evaluation Metrics:
+1. Convergence Speed: Number of training rounds required to reach stable PDR
+(FedG-ELITE is expected to be faster than Tabular Q-learning).
+2. Communication Overhead: Total bytes of uploaded data (expected to be sig-
+niﬁcantly reduced).
+3. Generalization Test: Train in Area A, test in Area B, evaluate performance
+degradation (FedG-ELITE is expected to have minimal degradation).
+4. Privacy Leakage Analysis: Use Membership Inference Attack to test resistance
+capabilities.
+7
+Deep Comparative Analysis of Enhanced Scheme
+vs. Original ELITE Scheme
+This section compares FedG-ELITE with the baseline ELITE scheme from three dimen-
+sions: architecture performance, privacy protection, and adaptability, clarifying the ne-
+cessity and advantages of the improvements.
+11
+
+
+7.1
+Generalization & Scalability
+• ELITE: Relies on discrete IDs. If a new junction is added to the network, or a
+vehicle enters a never-visited area, the Q-table has no corresponding record and
+must start exploration from scratch, causing a sharp performance drop in the initial
+stage (Cold Start problem).
+• FedG-ELITE: Based on inductive learning of GNN. The model learns general
+rules like "how to judge routing quality based on neighbor features," rather than
+rote memorization of "Junction ID5 to ID6 is good." Therefore, when encountering
+a new junction, as long as its features (traﬃc ﬂow, speed) can be obtained, the
+model can immediately generate eﬀective embeddings and make reasonable deci-
+sions, possessing strong Zero-shot Transfer capability.
+7.2
+Privacy & Communication
+• ELITE: Belongs to centralized cloud training. Requires all vehicles to upload de-
+tailed movement trajectories and interaction logs to construct a high-ﬁdelity digital
+twin. This not only brings huge uplink bandwidth pressure (Raw Data Volume)
+but also exposes vehicles to the risk of trajectory privacy leakage.
+• FedG-ELITE: Achieves "data available but invisible." Vehicles only process raw
+data locally and only upload model gradients processed by encryption or diﬀerential
+privacy. The size of gradient data (usually KB level) is far smaller than raw sensing
+data streams, signiﬁcantly reducing communication overhead.
+7.3
+Handling Non-IID Data
+• ELITE: Centralized training assumes all data is uniformly mixed on the server
+side (IID), ignoring the diﬀerences in traﬃc patterns across diﬀerent regions, which
+may lead to poor model performance in certain special areas (such as frequently
+congested school zones).
+• FedG-ELITE: By adding the FedProx regularization term to the local loss func-
+tion, it explicitly addresses the systematic heterogeneity of data.
+It allows the
+model to retain adaptability to local speciﬁc traﬃc patterns while adapting to global
+trends, improving robustness.
+8
+Conclusion
+This report addresses the deﬁciencies of the existing ELITE routing scheme in terms of
+scalability, generalization ability, and privacy protection, proposing a deep improvement
+scheme FedG-ELITE based on federated graph learning. By introducing GraphSAGE,
+we transform the physical topology of the road network into vector representations in a
+high-dimensional feature space, thoroughly solving the curse of dimensionality of tabular
+reinforcement learning in large-scale road networks and endowing the routing protocol
+with inductive generalization capabilities for dynamic topologies. By introducing the fed-
+erated learning framework, we reconstruct the functional positioning of the digital twin,
+12
+
+
+Table 1: Core Feature Comparison: ELITE vs. FedG-ELITE
+Dimension
+ELITE (Baseline)
+FedG-ELITE
+(Pro-
+posed)
+Core Algorithm
+Tabular
+Q-Learning
++
+Fuzzy Logic
+GNN
+(GraphSAGE)
++
+DQN + Federated Learning
+State Space
+Discrete Junction ID
+Continuous Graph Embed-
+ding Vectors
+Training
+Archi-
+tecture
+Centralized (DT Controller)
+Distributed
+(Vehicle/RSU
+Clients + Server Aggrega-
+tion)
+Privacy Protec-
+tion
+Low
+(Requires
+uploading
+raw data)
+High (Transmits only model
+parameters/gradients)
+Network Adapt-
+ability
+Weak (Topology change re-
+quires retraining)
+Strong (Inductive learning,
+adapts to dynamic topol-
+ogy)
+Bandwidth Con-
+sumption
+High
+(Transmits
+sensing
+logs)
+Low
+(Transmits
+model
+weights)
+transforming it from a single simulation center to an aggregation center for network-wide
+intelligence, achieving collaborative intelligent evolution without violating user privacy.
+At the same time, the fuzzy logic fusion mechanism is retained and optimized to en-
+sure reﬁned support for multi-modal QoS services. Theoretical analysis and architectural
+design demonstrate that FedG-ELITE not only technologically aligns with the develop-
+ment trends of "Edge Intelligence" and "Privacy Computing" in vehicular networks but
+also possesses signiﬁcant advantages in reducing bandwidth costs and improving decision
+robustness in actual deployment.
+References
+[1] L. Zhao, Z. Bi, A. Hawbani, K. Yu, Y. Zhang, and M. Guizani, "ELITE: An Intelligent
+Digital Twin-Based Hierarchical Routing Scheme for Softwarized Vehicular Networks,"
+IEEE Transactions on Mobile Computing, vol. 22, no. 9, pp. 5231-5247, Sept. 2023.
+[2] W. Hamilton, Z. Ying, and J. Leskovec, "Inductive representation learning on large
+graphs," in Proc. NIPS, 2017.
+[3] T. Li et al., "Federated optimization in heterogeneous networks," in Proc. MLSys,
+2020.
+[4] L. Zhao et al., "Routing schemes in software-deﬁned vehicular networks: Design,
+open issues and challenges," IEEE Intell. Transp. Syst. Mag., vol. 13, no. 4, pp. 217-226,
+2021.
+[5] X. Wang et al., "Federated Learning with Graph-Based Aggregation for Traﬃc
+Forecasting," arXiv preprint arXiv:2507.09805, 2025.
+[6] "Federated Learning for Privacy-Preserving Intrusion Detection in VANETs," Re-
+searchGate, 2025.
+13

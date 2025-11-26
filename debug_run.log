@@ -1,0 +1,93 @@
+[18:44:59] Killing any leftover ns3/sumo/controller processes (best effort)...
+[18:45:00] Cleaning stale SysV shared memory for ns3-ai (keys 1234/2333)...
+[18:45:00] Starting ELITE controller (ns3-ai) as Lyh ...
+[18:45:00] Controller PID=90438, logging to /home/Lyh/ELITE-zg-main/dtn_out/controller.log
+[18:45:00] Waiting for controller to initialize (junction legend)...
+[18:45:00] Found /home/Lyh/ELITE-zg-main/dtn_out/junction_legend.csv
+[18:45:00] Running NS-3 (Poisson=1, lambda=0.5, sim-time=20s, wall-time timeout=600s) ...
+[0/2] Re-checking globbed directories...
+ninja: no work to do.
+A transmission power of 23 dBm  will be used.
+Starting simulation... 
+Sumo: wait for socket: 20s
+Loading configuration ... done.
+Warning: Environment variable SUMO_HOME is not set properly, XML validation will fail or use slow website lookups.
+***Starting server on port 3400 ***
+Loading net-file from '/home/Lyh/VaN3Twin/ns-3-dev/src/automotive/examples/grid_network/grid.net.xml' ... done (39ms).
+Loading additional-files from '/home/Lyh/VaN3Twin/ns-3-dev/src/automotive/examples/grid_network/stations.xml' ...
+ done (42098ms).
+Loading route-files incrementally from '/home/Lyh/VaN3Twin/ns-3-dev/src/automotive/examples/grid_network/grid.rou.xml'
+Loading done.
+Simulation version 1.23.1 started with time: 0.00.
+[POISSON] GenerateOneFlow invoked totalApps=5 rsuApps=0
+[ELTI] GenerateOneFlow invoked totalApps=5
+[ELTI] GenerateOneFlow triggered vehApps=5
+[POISSON] Selected src=0 dst=4
+[POISSON] Use cached dstPos dst=4 xy=(16.6803,-9.38)
+[POISSON] Trigger RequestRoute src=0 dst=4
+[ELTI] RequestRoute stationId=0 dst=4 msgType=2
+[ELITE][AI] call GetAction stationId=0 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=0 aiKey=2333
+[POISSON] GenerateOneFlow invoked totalApps=8 rsuApps=0
+[ELTI] GenerateOneFlow invoked totalApps=8
+[ELTI] GenerateOneFlow triggered vehApps=8
+[POISSON] Selected src=6 dst=5
+[POISSON] TraCI fetch dst=5 xy=(9.38,21.5099)
+[POISSON] Trigger RequestRoute src=6 dst=5
+[ELTI] RequestRoute stationId=6 dst=5 msgType=3
+[ELITE][AI] call GetAction stationId=6 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=6 aiKey=2333
+[POISSON] GenerateOneFlow invoked totalApps=16 rsuApps=0
+[ELTI] GenerateOneFlow invoked totalApps=16
+[ELTI] GenerateOneFlow triggered vehApps=16
+[POISSON] Selected src=10 dst=15
+[POISSON] TraCI fetch dst=15 xy=(1020.56,-9.38)
+[POISSON] Trigger RequestRoute src=10 dst=15
+[ELTI] RequestRoute stationId=10 dst=15 msgType=2
+[ELITE][AI] call GetAction stationId=10 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=10 aiKey=2333
+[POISSON] GenerateOneFlow invoked totalApps=17 rsuApps=0
+[ELTI] GenerateOneFlow invoked totalApps=17
+[ELTI] GenerateOneFlow triggered vehApps=17
+[POISSON] Selected src=13 dst=8
+[POISSON] TraCI fetch dst=8 xy=(42.1881,1323.95)
+[POISSON] Trigger RequestRoute src=13 dst=8
+[ELTI] RequestRoute stationId=13 dst=8 msgType=2
+[ELITE][AI] call GetAction stationId=13 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=13 aiKey=2333
+[POISSON] GenerateOneFlow invoked totalApps=21 rsuApps=0
+[ELTI] GenerateOneFlow invoked totalApps=21
+[ELTI] GenerateOneFlow triggered vehApps=21
+[POISSON] Selected src=1 dst=15
+[POISSON] Use cached dstPos dst=15 xy=(1020.56,-9.38)
+[POISSON] Trigger RequestRoute src=1 dst=15
+[ELTI] RequestRoute stationId=1 dst=15 msgType=1
+[ELITE][AI] call GetAction stationId=1 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=1 aiKey=2333
+[POISSON] GenerateOneFlow invoked totalApps=26 rsuApps=0
+[POISSON] Selected src=17 dst=20
+[POISSON] Use cached dstPos dst=20 xy=(16.5776,-9.38)
+[POISSON] Trigger RequestRoute src=17 dst=20
+[ELTI] RequestRoute stationId=17 dst=20 msgType=1
+[ELITE][AI] call GetAction stationId=17 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=17 aiKey=2333
+[POISSON] GenerateOneFlow invoked totalApps=31 rsuApps=0
+[POISSON] Selected src=13 dst=27
+[POISSON] TraCI fetch dst=27 xy=(1990.62,1304.01)
+[POISSON] Trigger RequestRoute src=13 dst=27
+[ELTI] RequestRoute stationId=13 dst=27 msgType=0
+[ELITE][AI] call GetAction stationId=13 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=13 aiKey=2333
+[POISSON] GenerateOneFlow invoked totalApps=33 rsuApps=0
+[POISSON] Selected src=13 dst=26
+[POISSON] TraCI fetch dst=26 xy=(1963.34,1342.7)
+[POISSON] Trigger RequestRoute src=13 dst=26
+[ELTI] RequestRoute stationId=13 dst=26 msgType=2
+[ELITE][AI] call GetAction stationId=13 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=13 aiKey=2333
+Step #0.00 (0ms ?*RT. ?UPS, TraCI: 0ms, vehicles TOT 1 ACT 1 BUF 0)                       Step #5.00 (1ms ~= 50.00*RT, ~10000.00UPS, TraCI: 42ms, vehicles TOT 10 ACT 10 BUF 1)     Step #10.00 (0ms ?*RT. ?UPS, TraCI: 249ms, vehicles TOT 20 ACT 20 BUF 0)                  Step #15.00 (1ms ~= 50.00*RT, ~30000.00UPS, TraCI: 81ms, vehicles TOT 30 ACT 30 BUF 0)    Interrupt signal received, trying to exit gracefully.
+Error: tcpip::Socket::recvAndCheck @ recv: peer shutdown
+Quitting (on error).
+[18:55:00] NS-3 exited non-zero (code=124). See /home/Lyh/ELITE-zg-main/dtn_out/ns3_run.log and /home/Lyh/VaN3Twin/ns-3-dev/src/automotive/examples/ELTI/run_ELTI_auto.log
+[18:55:00] NS-3 logs: /home/Lyh/VaN3Twin/ns-3-dev/src/automotive/examples/ELTI/run_ELTI_auto.log and /home/Lyh/ELITE-zg-main/dtn_out/ns3_run.log
+[18:55:00] Controller log: /home/Lyh/ELITE-zg-main/dtn_out/controller.log

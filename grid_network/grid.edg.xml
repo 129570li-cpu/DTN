@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<edges xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/edges_file.xsd">
+    <edge id="E_TOP_L" from="TOP_LEFT" to="TOP_CENTER" type="square_main"/>
+    <edge id="E_TOP_L_R" from="TOP_CENTER" to="TOP_LEFT" type="square_main"/>
+    <edge id="E_TOP_R" from="TOP_CENTER" to="TOP_RIGHT" type="square_main"/>
+    <edge id="E_TOP_R_R" from="TOP_RIGHT" to="TOP_CENTER" type="square_main"/>
+    <edge id="E_BOTTOM_L" from="BOTTOM_LEFT" to="BOTTOM_CENTER" type="square_main"/>
+    <edge id="E_BOTTOM_L_R" from="BOTTOM_CENTER" to="BOTTOM_LEFT" type="square_main"/>
+    <edge id="E_BOTTOM_R" from="BOTTOM_CENTER" to="BOTTOM_RIGHT" type="square_main"/>
+    <edge id="E_BOTTOM_R_R" from="BOTTOM_RIGHT" to="BOTTOM_CENTER" type="square_main"/>
+    <edge id="E_LEFT_UP" from="TOP_LEFT" to="LEFT_UPPER" type="square_main"/>
+    <edge id="E_LEFT_UP_R" from="LEFT_UPPER" to="TOP_LEFT" type="square_main"/>
+    <edge id="E_LEFT_MID" from="LEFT_UPPER" to="LEFT_LOWER" type="square_main"/>
+    <edge id="E_LEFT_MID_R" from="LEFT_LOWER" to="LEFT_UPPER" type="square_main"/>
+    <edge id="E_LEFT_LOW" from="LEFT_LOWER" to="BOTTOM_LEFT" type="square_main"/>
+    <edge id="E_LEFT_LOW_R" from="BOTTOM_LEFT" to="LEFT_LOWER" type="square_main"/>
+    <edge id="E_RIGHT_UP" from="TOP_RIGHT" to="RIGHT_UPPER" type="square_main"/>
+    <edge id="E_RIGHT_UP_R" from="RIGHT_UPPER" to="TOP_RIGHT" type="square_main"/>
+    <edge id="E_RIGHT_MID" from="RIGHT_UPPER" to="RIGHT_LOWER" type="square_main"/>
+    <edge id="E_RIGHT_MID_R" from="RIGHT_LOWER" to="RIGHT_UPPER" type="square_main"/>
+    <edge id="E_RIGHT_LOW" from="RIGHT_LOWER" to="BOTTOM_RIGHT" type="square_main"/>
+    <edge id="E_RIGHT_LOW_R" from="BOTTOM_RIGHT" to="RIGHT_LOWER" type="square_main"/>
+    <edge id="E_CENTER_TOP" from="TOP_CENTER" to="CENTER_UPPER" type="square_main"/>
+    <edge id="E_CENTER_TOP_R" from="CENTER_UPPER" to="TOP_CENTER" type="square_main"/>
+    <edge id="E_CENTER_MID" from="CENTER_UPPER" to="CENTER_LOWER" type="square_main"/>
+    <edge id="E_CENTER_MID_R" from="CENTER_LOWER" to="CENTER_UPPER" type="square_main"/>
+    <edge id="E_CENTER_LOW" from="CENTER_LOWER" to="BOTTOM_CENTER" type="square_main"/>
+    <edge id="E_CENTER_LOW_R" from="BOTTOM_CENTER" to="CENTER_LOWER" type="square_main"/>
+    <edge id="E_UPPER_LEFT" from="LEFT_UPPER" to="CENTER_UPPER" type="square_main"/>
+    <edge id="E_UPPER_LEFT_R" from="CENTER_UPPER" to="LEFT_UPPER" type="square_main"/>
+    <edge id="E_UPPER_RIGHT" from="CENTER_UPPER" to="RIGHT_UPPER" type="square_main"/>
+    <edge id="E_UPPER_RIGHT_R" from="RIGHT_UPPER" to="CENTER_UPPER" type="square_main"/>
+    <edge id="E_LOWER_LEFT" from="LEFT_LOWER" to="CENTER_LOWER" type="square_main"/>
+    <edge id="E_LOWER_LEFT_R" from="CENTER_LOWER" to="LEFT_LOWER" type="square_main"/>
+    <edge id="E_LOWER_RIGHT" from="CENTER_LOWER" to="RIGHT_LOWER" type="square_main"/>
+    <edge id="E_LOWER_RIGHT_R" from="RIGHT_LOWER" to="CENTER_LOWER" type="square_main"/>
+</edges>

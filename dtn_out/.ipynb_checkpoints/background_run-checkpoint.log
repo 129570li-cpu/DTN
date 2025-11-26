@@ -1,0 +1,49 @@
+[11:27:23] Killing any leftover ns3/sumo/controller processes (best effort)...
+[11:27:24] Cleaning stale SysV shared memory for ns3-ai (keys 1234/2333)...
+[11:27:24] Starting ELITE controller (ns3-ai) as Lyh ...
+[11:27:24] Controller PID=13982, logging to /home/Lyh/ELITE-zg-main/dtn_out/controller.log
+[11:27:24] Waiting for controller to initialize (junction legend)...
+[11:27:24] Found /home/Lyh/ELITE-zg-main/dtn_out/junction_legend.csv
+[11:27:24] Running NS-3 (Poisson=1, lambda=0.5, sim-time=100s, wall-time timeout=3600s) ...
+[0/2] Re-checking globbed directories...
+ninja: no work to do.
+A transmission power of 23 dBm  will be used.
+Starting simulation... 
+Sumo: wait for socket: 20s
+Loading configuration ... done.
+Warning: Environment variable SUMO_HOME is not set properly, XML validation will fail or use slow website lookups.
+***Starting server on port 3400 ***
+Loading net-file from '/home/Lyh/VaN3Twin/ns-3-dev/src/automotive/examples/grid_network/grid.net.xml' ... done (27ms).
+Loading additional-files from '/home/Lyh/VaN3Twin/ns-3-dev/src/automotive/examples/grid_network/stations.xml' ...
+ done (20726ms).
+Loading route-files incrementally from '/home/Lyh/VaN3Twin/ns-3-dev/src/automotive/examples/grid_network/grid.rou.xml'
+Loading done.
+Simulation version 1.23.1 started with time: 0.00.
+[ELTI] GenerateOneFlow invoked totalApps=5
+[ELTI] GenerateOneFlow triggered vehApps=5
+[ELTI] RequestRoute stationId=0 dst=4 msgType=1
+[ELITE][AI] call GetAction stationId=0 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=0 aiKey=2333
+[ELTI] GenerateOneFlow invoked totalApps=10
+[ELTI] GenerateOneFlow triggered vehApps=10
+[ELTI] RequestRoute stationId=6 dst=10 msgType=0
+[ELITE][AI] call GetAction stationId=6 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=6 aiKey=2333
+[ELTI] GenerateOneFlow invoked totalApps=26
+[ELTI] GenerateOneFlow triggered vehApps=26
+[ELTI] RequestRoute stationId=12 dst=19 msgType=1
+[ELITE][AI] call GetAction stationId=12 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=12 aiKey=2333
+[ELTI] GenerateOneFlow invoked totalApps=26
+[ELTI] GenerateOneFlow triggered vehApps=26
+[ELTI] RequestRoute stationId=7 dst=4 msgType=0
+[ELITE][AI] call GetAction stationId=7 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=7 aiKey=2333
+[ELTI] GenerateOneFlow invoked totalApps=28
+[ELTI] GenerateOneFlow triggered vehApps=28
+[ELTI] RequestRoute stationId=5 dst=24 msgType=0
+[ELITE][AI] call GetAction stationId=5 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=5 aiKey=2333
+[ELTI] RequestRoute stationId=9 dst=23 msgType=0
+[ELITE][AI] call GetAction stationId=9 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=9 aiKey=2333

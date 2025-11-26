@@ -1,0 +1,1 @@
+time,event,stationId,srcSid,dstSid,pathId,pathLen,nextIdx,targetJ,nextHop,segHop,segDelay,segLen,policyId

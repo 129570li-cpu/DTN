@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<nodes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/nodes_file.xsd">
+    <node id="BOTTOM_LEFT" x="0.00" y="0.00" type="priority"/>
+    <node id="BOTTOM_CENTER" x="1000.00" y="0.00" type="priority"/>
+    <node id="BOTTOM_RIGHT" x="2000.00" y="0.00" type="priority"/>
+    <node id="TOP_LEFT" x="0.00" y="2000.00" type="priority"/>
+    <node id="TOP_CENTER" x="1000.00" y="2000.00" type="priority"/>
+    <node id="TOP_RIGHT" x="2000.00" y="2000.00" type="priority"/>
+    <node id="LEFT_UPPER" x="0.00" y="1333.33" type="priority"/>
+    <node id="LEFT_LOWER" x="0.00" y="666.67" type="priority"/>
+    <node id="RIGHT_UPPER" x="2000.00" y="1333.33" type="priority"/>
+    <node id="RIGHT_LOWER" x="2000.00" y="666.67" type="priority"/>
+    <node id="CENTER_UPPER" x="1000.00" y="1333.33" type="priority"/>
+    <node id="CENTER_LOWER" x="1000.00" y="666.67" type="priority"/>
+</nodes>

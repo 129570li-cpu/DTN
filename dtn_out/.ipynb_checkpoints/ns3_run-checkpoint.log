@@ -1,0 +1,621 @@
+[0/2] Re-checking globbed directories...
+ninja: no work to do.
+A transmission power of 30 dBm  will be used.
+Starting simulation... 
+Sumo: wait for socket: 20s
+Loading configuration ... done.
+Warning: Environment variable SUMO_HOME is not set properly, XML validation will fail or use slow website lookups.
+***Starting server on port 3400 ***
+Loading net-file from '/home/Lyh/VaN3Twin/ns-3-dev/src/automotive/examples/grid_network_large/grid_network_fed/grid.net.xml' ... done (145ms).
+Loading additional-files from '/home/Lyh/VaN3Twin/ns-3-dev/src/automotive/examples/grid_network_large/grid_network_fed/stations.xml' ...
+ done (20ms).
+Loading route-files incrementally from '/home/Lyh/VaN3Twin/ns-3-dev/src/automotive/examples/grid_network_large/grid_network_fed/grid.rou.xml'
+Loading done.
+Simulation version 1.23.1 started with time: 0.00.
+[POISSON] GenerateOneFlow invoked totalApps=23 rsuApps=0
+[ELTI] GenerateOneFlow invoked totalApps=23
+[ELTI] GenerateOneFlow triggered vehApps=23
+[POISSON] Selected src=14 dst=9
+[POISSON] TraCI fetch dst=9 xy=(508.75,2529.33)
+[POISSON] Trigger RequestRoute src=14 dst=9
+[ELTI] RequestRoute stationId=14 dst=9 msgType=0
+[ELITE][AI] call GetAction stationId=14 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=14 aiKey=2333
+[ELITE][AI] Env sent to controller stationId=14 simTime=3 neighbors=64 queueLen=0 nextTargetHint=18 dstHint=46
+[ELITE][AI] Action received stationId=14 policyId=1 pathLen=7 firstHop=18
+[ELITE][GUC] use geoArea lon=0 lat=1000 r=25 nh=0 tgt=18
+[POISSON] GenerateOneFlow invoked totalApps=24 rsuApps=0
+[ELTI] GenerateOneFlow invoked totalApps=24
+[ELTI] GenerateOneFlow triggered vehApps=24
+[POISSON] Selected src=16 dst=14
+[POISSON] TraCI fetch dst=14 xy=(8.75,1021.01)
+[POISSON] Trigger RequestRoute src=16 dst=14
+[ELTI] RequestRoute stationId=16 dst=14 msgType=1
+[ELITE][AI] call GetAction stationId=16 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=16 aiKey=2333
+[ELITE][AI] Env sent to controller stationId=16 simTime=3.07338 neighbors=64 queueLen=0 nextTargetHint=34 dstHint=18
+[ELITE][AI] Action received stationId=16 policyId=1 pathLen=9 firstHop=34
+[ELITE][GUC] use geoArea lon=3500 lat=1500 r=25 nh=0 tgt=34
+[ELITE][CAM] t=3.58457 self=26 recv_from=27 neighbors_before=0
+[ELITE][CAM] t=3.58457 self=26 neighbors_after=1
+[POISSON] GenerateOneFlow invoked totalApps=39 rsuApps=0
+[ELTI] GenerateOneFlow invoked totalApps=39
+[ELTI] GenerateOneFlow triggered vehApps=39
+[POISSON] Selected src=37 dst=6
+[POISSON] TraCI fetch dst=6 xy=(3508.75,1537.54)
+[POISSON] Trigger RequestRoute src=37 dst=6
+[ELTI] RequestRoute stationId=37 dst=6 msgType=0
+[ELITE][AI] call GetAction stationId=37 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=37 aiKey=2333
+[ELITE][AI] Env sent to controller stationId=37 simTime=4.98197 neighbors=64 queueLen=0 nextTargetHint=40 dstHint=34
+[ELITE][AI] Action received stationId=37 policyId=1 pathLen=7 firstHop=40
+[ELITE][CAM] t=5.18457 self=38 recv_from=27 neighbors_before=0
+[ELITE][CAM] t=5.18457 self=38 neighbors_after=1
+[ELITE][TICK] t=5.5 stationId=0 inSession=0 neighbors=0
+[ELITE][TICK] t=5.6 stationId=1 inSession=0 neighbors=0
+[ELITE][TICK] t=5.8 stationId=2 inSession=0 neighbors=0
+[ELITE][TICK] t=6 stationId=4 inSession=0 neighbors=0
+[ELITE][TICK] t=6.1 stationId=5 inSession=0 neighbors=0
+[ELITE][TICK] t=6.3 stationId=6 inSession=0 neighbors=0
+[ELITE][CAM] t=6.38457 self=49 recv_from=27 neighbors_before=0
+[ELITE][CAM] t=6.38457 self=49 neighbors_after=1
+[ELITE][TICK] t=6.4 stationId=7 inSession=0 neighbors=0
+[ELITE][TICK] t=6.5 stationId=8 inSession=0 neighbors=0
+[ELITE][TICK] t=6.6 stationId=9 inSession=0 neighbors=0
+[ELITE][CAM] t=6.78457 self=52 recv_from=27 neighbors_before=0
+[ELITE][CAM] t=6.78457 self=52 neighbors_after=1
+[ELITE][TICK] t=6.8 stationId=10 inSession=0 neighbors=0
+[ELITE][TICK] t=6.9 stationId=11 inSession=0 neighbors=0
+[ELITE][TICK] t=7 stationId=12 inSession=0 neighbors=0
+[ELITE][TICK] t=7.1 stationId=13 inSession=0 neighbors=0
+[POISSON] GenerateOneFlow invoked totalApps=57 rsuApps=0
+[ELTI] GenerateOneFlow invoked totalApps=57
+[ELTI] GenerateOneFlow triggered vehApps=57
+[POISSON] Selected src=25 dst=51
+[POISSON] TraCI fetch dst=51 xy=(1508.75,2019.83)
+[POISSON] Trigger RequestRoute src=25 dst=51
+[ELTI] RequestRoute stationId=25 dst=51 msgType=1
+[ELITE][AI] call GetAction stationId=25 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=25 aiKey=2333
+[ELITE][AI] Env sent to controller stationId=25 simTime=7.16822 neighbors=64 queueLen=0 nextTargetHint=47 dstHint=39
+[ELITE][AI] Action received stationId=25 policyId=1 pathLen=5 firstHop=47
+[ELITE][GUC] use geoArea lon=1000 lat=2500 r=25 nh=0 tgt=47
+[ELITE][GUC] use geoArea lon=25.0412 lat=-8.75 r=25 nh=27 tgt=47
+[ELITE][TICK] t=7.3 stationId=14 inSession=0 neighbors=0
+[ELITE][TICK] t=7.4 stationId=15 inSession=0 neighbors=0
+[ELITE][TICK] t=7.5 stationId=16 inSession=1 neighbors=0
+[ELITE][CAM] t=7.58456 self=58 recv_from=27 neighbors_before=0
+[ELITE][CAM] t=7.58456 self=58 neighbors_after=1
+[ELITE][TICK] t=7.6 stationId=17 inSession=0 neighbors=0
+[POISSON] GenerateOneFlow invoked totalApps=61 rsuApps=0
+[ELTI] GenerateOneFlow invoked totalApps=61
+[ELTI] GenerateOneFlow triggered vehApps=61
+[POISSON] Selected src=43 dst=6
+[POISSON] Use cached dstPos dst=6 xy=(3508.75,1537.54)
+[POISSON] Trigger RequestRoute src=43 dst=6
+[ELTI] RequestRoute stationId=43 dst=6 msgType=0
+[ELITE][AI] call GetAction stationId=43 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=43 aiKey=2333
+[ELITE][AI] Env sent to controller stationId=43 simTime=7.70548 neighbors=64 queueLen=0 nextTargetHint=22 dstHint=34
+[ELITE][AI] Action received stationId=43 policyId=1 pathLen=5 firstHop=22
+[ELITE][GUC] use geoArea lon=2000 lat=1000 r=25 nh=0 tgt=22
+[ELITE][GUC] use geoArea lon=2500 lat=1000 r=25 nh=0 tgt=23
+[ELITE][GUC] use geoArea lon=29.115 lat=-8.75 r=25 nh=27 tgt=22
+[ELITE][GUC] use geoArea lon=30.888 lat=-8.75 r=25 nh=27 tgt=22
+[ELITE][TICK] t=7.8 stationId=18 inSession=0 neighbors=0
+[ELITE][TICK] t=7.9 stationId=19 inSession=0 neighbors=0
+[ELITE][TICK] t=8 stationId=20 inSession=0 neighbors=0
+[ELITE][TICK] t=8.1 stationId=21 inSession=0 neighbors=0
+[ELITE][TICK] t=8.3 stationId=22 inSession=0 neighbors=0
+[POISSON] GenerateOneFlow invoked totalApps=66 rsuApps=0
+[POISSON] Selected src=22 dst=8
+[POISSON] TraCI fetch dst=8 xy=(2008.75,3073.91)
+[POISSON] Trigger RequestRoute src=22 dst=8
+[ELTI] RequestRoute stationId=22 dst=8 msgType=3
+[ELITE][AI] call GetAction stationId=22 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=22 aiKey=2333
+[ELITE][AI] Env sent to controller stationId=22 simTime=8.3214 neighbors=64 queueLen=0 nextTargetHint=37 dstHint=58
+[ELITE][AI] Action received stationId=22 policyId=1 pathLen=6 firstHop=37
+[ELITE][GUC] use geoArea lon=500 lat=2000 r=25 nh=0 tgt=37
+[ELITE][GUC] use geoArea lon=1000 lat=2000 r=25 nh=0 tgt=38
+[ELITE][GUC] use geoArea lon=30.888 lat=-8.75 r=25 nh=27 tgt=38
+[POISSON] GenerateOneFlow invoked totalApps=66 rsuApps=0
+[POISSON] Selected src=18 dst=17
+[POISSON] TraCI fetch dst=17 xy=(2560.51,3494.75)
+[POISSON] Trigger RequestRoute src=18 dst=17
+[ELTI] RequestRoute stationId=18 dst=17 msgType=0
+[ELITE][AI] call GetAction stationId=18 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=18 aiKey=2333
+[ELITE][AI] Env sent to controller stationId=18 simTime=8.36904 neighbors=64 queueLen=0 nextTargetHint=54 dstHint=68
+[ELITE][AI] Action received stationId=18 policyId=1 pathLen=7 firstHop=54
+[ELITE][GUC] use geoArea lon=0 lat=3000 r=25 nh=0 tgt=54
+[ELITE][TICK] t=8.4 stationId=23 inSession=0 neighbors=0
+[ELITE][TICK] t=8.5 stationId=24 inSession=0 neighbors=0
+[ELITE][TICK] t=8.6 stationId=25 inSession=0 neighbors=0
+[ELITE][CAM] t=8.78457 self=69 recv_from=27 neighbors_before=0
+[ELITE][CAM] t=8.78457 self=69 neighbors_after=1
+[ELITE][TICK] t=8.8 stationId=26 inSession=0 neighbors=1
+[ELITE][TICK] t=8.9 stationId=27 inSession=0 neighbors=0
+[ELITE][TICK] t=9 stationId=28 inSession=0 neighbors=0
+[ELITE][TICK] t=9.1 stationId=29 inSession=0 neighbors=0
+[ELITE][TICK] t=9.3 stationId=30 inSession=0 neighbors=0
+[ELITE][TICK] t=9.4 stationId=31 inSession=0 neighbors=0
+[ELITE][TICK] t=9.5 stationId=32 inSession=0 neighbors=0
+[ELITE][CAM] t=9.58456 self=75 recv_from=27 neighbors_before=0
+[ELITE][CAM] t=9.58456 self=75 neighbors_after=1
+[ELITE][CAM] t=9.58456 self=76 recv_from=27 neighbors_before=0
+[ELITE][CAM] t=9.58456 self=76 neighbors_after=1
+[ELITE][TICK] t=9.6 stationId=33 inSession=0 neighbors=0
+[ELITE][TICK] t=9.8 stationId=34 inSession=0 neighbors=0
+[ELITE][TICK] t=9.9 stationId=35 inSession=0 neighbors=0
+[ELITE][CAM] t=9.98456 self=76 recv_from=27 neighbors_before=1
+[ELITE][CAM] t=9.98456 self=76 neighbors_after=1
+[ELITE][TICK] t=10 stationId=36 inSession=0 neighbors=0
+[ELITE][TICK] t=10.1 stationId=37 inSession=0 neighbors=0
+[ELITE][TICK] t=10.3 stationId=38 inSession=0 neighbors=1
+[ELITE][CAM] t=10.3846 self=81 recv_from=27 neighbors_before=0
+[ELITE][CAM] t=10.3846 self=81 neighbors_after=1
+[ELITE][TICK] t=10.4 stationId=39 inSession=0 neighbors=0
+[ELITE][TICK] t=10.5 stationId=0 inSession=0 neighbors=0
+[ELITE][TICK] t=10.5 stationId=40 inSession=0 neighbors=0
+[ELITE][TICK] t=10.6 stationId=1 inSession=0 neighbors=0
+[ELITE][TICK] t=10.6 stationId=41 inSession=0 neighbors=0
+[ELITE][TICK] t=10.8 stationId=2 inSession=0 neighbors=0
+[ELITE][TICK] t=10.8 stationId=42 inSession=0 neighbors=0
+[ELITE][TICK] t=10.9 stationId=43 inSession=0 neighbors=0
+[ELITE][TICK] t=11 stationId=4 inSession=0 neighbors=0
+[ELITE][TICK] t=11 stationId=44 inSession=0 neighbors=0
+[ELITE][TICK] t=11.1 stationId=5 inSession=0 neighbors=0
+[ELITE][TICK] t=11.1 stationId=45 inSession=0 neighbors=0
+[ELITE][CAM] t=11.1846 self=86 recv_from=27 neighbors_before=0
+[ELITE][CAM] t=11.1846 self=86 neighbors_after=1
+[ELITE][TICK] t=11.3 stationId=6 inSession=0 neighbors=0
+[ELITE][TICK] t=11.3 stationId=46 inSession=0 neighbors=0
+[ELITE][TICK] t=11.4 stationId=7 inSession=0 neighbors=0
+[ELITE][TICK] t=11.4 stationId=47 inSession=0 neighbors=0
+[ELITE][TICK] t=11.5 stationId=8 inSession=0 neighbors=0
+[ELITE][TICK] t=11.5 stationId=48 inSession=0 neighbors=0
+[ELITE][CAM] t=11.5846 self=92 recv_from=27 neighbors_before=0
+[ELITE][CAM] t=11.5846 self=92 neighbors_after=1
+[ELITE][CAM] t=11.5846 self=91 recv_from=27 neighbors_before=0
+[ELITE][CAM] t=11.5846 self=91 neighbors_after=1
+[ELITE][TICK] t=11.6 stationId=9 inSession=0 neighbors=0
+[ELITE][TICK] t=11.6 stationId=49 inSession=0 neighbors=1
+[ELITE][TICK] t=11.8 stationId=10 inSession=0 neighbors=0
+[ELITE][TICK] t=11.8 stationId=50 inSession=0 neighbors=0
+[ELITE][TICK] t=11.9 stationId=11 inSession=0 neighbors=0
+[ELITE][TICK] t=11.9 stationId=51 inSession=0 neighbors=0
+[ELITE][CAM] t=11.9846 self=92 recv_from=27 neighbors_before=1
+[ELITE][CAM] t=11.9846 self=92 neighbors_after=1
+[ELITE][TICK] t=12 stationId=12 inSession=0 neighbors=0
+[ELITE][TICK] t=12 stationId=52 inSession=0 neighbors=1
+[ELITE][TICK] t=12.1 stationId=13 inSession=0 neighbors=0
+[ELITE][TICK] t=12.1 stationId=53 inSession=0 neighbors=0
+[POISSON] GenerateOneFlow invoked totalApps=97 rsuApps=0
+[POISSON] Selected src=73 dst=84
+[POISSON] TraCI fetch dst=84 xy=(2008.75,2522.18)
+[POISSON] Trigger RequestRoute src=73 dst=84
+[ELTI] RequestRoute stationId=73 dst=84 msgType=0
+[ELITE][AI] call GetAction stationId=73 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=73 aiKey=2333
+[ELITE][AI] Env sent to controller stationId=73 simTime=12.1449 neighbors=64 queueLen=0 nextTargetHint=38 dstHint=49
+[ELITE][AI] Action received stationId=73 policyId=1 pathLen=6 firstHop=38
+[ELITE][GUC] use geoArea lon=1000 lat=2000 r=25 nh=0 tgt=38
+[ELITE][GUC] use geoArea lon=42.9077 lat=-8.75 r=25 nh=27 tgt=38
+[ELITE][GUC] use geoArea lon=56.5871 lat=-5.25 r=25 nh=27 tgt=38
+[ELITE][GUC] use geoArea lon=52.8463 lat=-8.75 r=25 nh=27 tgt=38
+[ELITE][GUC] use geoArea lon=69.2182 lat=-5.25 r=25 nh=27 tgt=38
+[ELITE][GUC] use geoArea lon=64.7754 lat=-5.25 r=25 nh=27 tgt=38
+[ELITE][TICK] t=12.3 stationId=14 inSession=0 neighbors=0
+[ELITE][TICK] t=12.3 stationId=54 inSession=0 neighbors=0
+[ELITE][TICK] t=12.4 stationId=15 inSession=0 neighbors=0
+[ELITE][TICK] t=12.4 stationId=55 inSession=0 neighbors=0
+[ELITE][TICK] t=12.5 stationId=16 inSession=0 neighbors=0
+[ELITE][TICK] t=12.5 stationId=56 inSession=0 neighbors=0
+[ELITE][TICK] t=12.6 stationId=17 inSession=0 neighbors=0
+[ELITE][TICK] t=12.6 stationId=57 inSession=0 neighbors=0
+[ELITE][TICK] t=12.8 stationId=18 inSession=0 neighbors=0
+[ELITE][TICK] t=12.8 stationId=58 inSession=0 neighbors=1
+[ELITE][TICK] t=12.9 stationId=19 inSession=0 neighbors=0
+[ELITE][TICK] t=12.9 stationId=59 inSession=0 neighbors=0
+[ELITE][TICK] t=13 stationId=20 inSession=0 neighbors=0
+[ELITE][TICK] t=13 stationId=60 inSession=0 neighbors=0
+[ELITE][TICK] t=13.1 stationId=21 inSession=0 neighbors=0
+[ELITE][TICK] t=13.1 stationId=61 inSession=0 neighbors=0
+[POISSON] GenerateOneFlow invoked totalApps=105 rsuApps=0
+[POISSON] Selected src=15 dst=44
+[POISSON] TraCI fetch dst=44 xy=(1008.75,2568.07)
+[POISSON] Trigger RequestRoute src=15 dst=44
+[ELTI] RequestRoute stationId=15 dst=44 msgType=2
+[ELITE][AI] call GetAction stationId=15 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=15 aiKey=2333
+[ELITE][AI] Env sent to controller stationId=15 simTime=13.1845 neighbors=64 queueLen=0 nextTargetHint=28 dstHint=47
+[ELITE][AI] Action received stationId=15 policyId=1 pathLen=6 firstHop=28
+[ELITE][GUC] use geoArea lon=500 lat=1500 r=25 nh=0 tgt=28
+[ELITE][GUC] use geoArea lon=73.8788 lat=-5.25 r=25 nh=27 tgt=28
+[ELITE][GUC] use geoArea lon=49.3033 lat=-8.75 r=25 nh=27 tgt=28
+[ELITE][TICK] t=13.3 stationId=22 inSession=0 neighbors=0
+[ELITE][TICK] t=13.3 stationId=62 inSession=0 neighbors=0
+[ELITE][TICK] t=13.4 stationId=23 inSession=0 neighbors=0
+[ELITE][TICK] t=13.4 stationId=63 inSession=0 neighbors=0
+[ELITE][TICK] t=13.5 stationId=24 inSession=0 neighbors=0
+[ELITE][TICK] t=13.5 stationId=64 inSession=0 neighbors=0
+[ELITE][TICK] t=13.6 stationId=25 inSession=0 neighbors=0
+[ELITE][TICK] t=13.6 stationId=65 inSession=0 neighbors=0
+[ELITE][TICK] t=13.8 stationId=26 inSession=0 neighbors=1
+[ELITE][TICK] t=13.8 stationId=66 inSession=0 neighbors=0
+[ELITE][TICK] t=13.9 stationId=27 inSession=0 neighbors=0
+[ELITE][TICK] t=13.9 stationId=67 inSession=0 neighbors=0
+[ELITE][TICK] t=14 stationId=28 inSession=0 neighbors=0
+[ELITE][TICK] t=14 stationId=68 inSession=0 neighbors=0
+[ELITE][CAM] t=14.0846 self=111 recv_from=27 neighbors_before=0
+[ELITE][CAM] t=14.0846 self=111 neighbors_after=1
+[ELITE][TICK] t=14.1 stationId=29 inSession=0 neighbors=0
+[ELITE][TICK] t=14.1 stationId=69 inSession=0 neighbors=1
+[ELITE][CAM] t=14.1631 self=111 recv_from=92 neighbors_before=1
+[ELITE][CAM] t=14.1631 self=111 neighbors_after=2
+[ELITE][TICK] t=14.3 stationId=30 inSession=0 neighbors=0
+[ELITE][TICK] t=14.3 stationId=70 inSession=0 neighbors=0
+[ELITE][CAM] t=14.3846 self=111 recv_from=27 neighbors_before=2
+[ELITE][CAM] t=14.3846 self=111 neighbors_after=2
+[ELITE][TICK] t=14.4 stationId=31 inSession=0 neighbors=0
+[ELITE][TICK] t=14.4 stationId=71 inSession=0 neighbors=0
+[ELITE][TICK] t=14.5 stationId=32 inSession=0 neighbors=0
+[ELITE][TICK] t=14.5 stationId=72 inSession=0 neighbors=0
+[ELITE][TICK] t=14.6 stationId=33 inSession=0 neighbors=0
+[ELITE][TICK] t=14.6 stationId=73 inSession=0 neighbors=0
+[ELITE][TICK] t=14.8 stationId=34 inSession=0 neighbors=0
+[ELITE][TICK] t=14.8 stationId=74 inSession=0 neighbors=0
+[ELITE][TICK] t=14.9 stationId=35 inSession=0 neighbors=0
+[ELITE][TICK] t=14.9 stationId=75 inSession=0 neighbors=1
+[ELITE][TICK] t=15 stationId=36 inSession=0 neighbors=0
+[ELITE][TICK] t=15 stationId=76 inSession=0 neighbors=1
+[ELITE][TICK] t=15.1 stationId=37 inSession=0 neighbors=0
+[ELITE][TICK] t=15.1 stationId=77 inSession=0 neighbors=0
+[POISSON] GenerateOneFlow invoked totalApps=121 rsuApps=0
+[POISSON] Selected src=41 dst=7
+[POISSON] TraCI fetch dst=7 xy=(1658.58,2994.75)
+[POISSON] Trigger RequestRoute src=41 dst=7
+[ELTI] RequestRoute stationId=41 dst=7 msgType=1
+[ELITE][AI] call GetAction stationId=41 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=41 aiKey=2333
+[ELITE][AI] Env sent to controller stationId=41 simTime=15.1473 neighbors=64 queueLen=0 nextTargetHint=21 dstHint=57
+[ELITE][AI] Action received stationId=41 policyId=1 pathLen=7 firstHop=21
+[ELITE][GUC] use geoArea lon=1500 lat=1000 r=25 nh=0 tgt=21
+[ELITE][GUC] use geoArea lon=106.444 lat=-5.25 r=25 nh=27 tgt=21
+[ELITE][CAM] t=15.2846 self=121 recv_from=27 neighbors_before=0
+[ELITE][CAM] t=15.2846 self=121 neighbors_after=1
+[ELITE][TICK] t=15.3 stationId=38 inSession=0 neighbors=1
+[ELITE][TICK] t=15.3 stationId=78 inSession=0 neighbors=0
+[ELITE][CAM] t=15.3631 self=121 recv_from=92 neighbors_before=1
+[ELITE][CAM] t=15.3631 self=121 neighbors_after=2
+[ELITE][TICK] t=15.4 stationId=39 inSession=0 neighbors=0
+[ELITE][TICK] t=15.4 stationId=79 inSession=0 neighbors=0
+[ELITE][TICK] t=15.5 stationId=0 inSession=0 neighbors=0
+[ELITE][TICK] t=15.5 stationId=40 inSession=0 neighbors=0
+[ELITE][TICK] t=15.5 stationId=80 inSession=0 neighbors=0
+[ELITE][CAM] t=15.5846 self=121 recv_from=27 neighbors_before=2
+[ELITE][CAM] t=15.5846 self=121 neighbors_after=2
+[ELITE][CAM] t=15.5846 self=124 recv_from=27 neighbors_before=0
+[ELITE][CAM] t=15.5846 self=124 neighbors_after=1
+[ELITE][TICK] t=15.6 stationId=1 inSession=0 neighbors=0
+[ELITE][TICK] t=15.6 stationId=41 inSession=1 neighbors=0
+[ELITE][TICK] t=15.6 stationId=81 inSession=0 neighbors=1
+[ELITE][CAM] t=15.6631 self=124 recv_from=92 neighbors_before=1
+[ELITE][CAM] t=15.6631 self=124 neighbors_after=2
+[ELITE][TICK] t=15.8 stationId=2 inSession=0 neighbors=0
+[ELITE][TICK] t=15.8 stationId=42 inSession=0 neighbors=0
+[ELITE][TICK] t=15.8 stationId=82 inSession=0 neighbors=0
+[ELITE][CAM] t=15.8846 self=126 recv_from=27 neighbors_before=0
+[ELITE][CAM] t=15.8846 self=126 neighbors_after=1
+[ELITE][CAM] t=15.8846 self=124 recv_from=27 neighbors_before=2
+[ELITE][CAM] t=15.8846 self=124 neighbors_after=2
+[ELITE][TICK] t=15.9 stationId=43 inSession=0 neighbors=0
+[ELITE][TICK] t=15.9 stationId=83 inSession=0 neighbors=0
+[ELITE][CAM] t=15.9631 self=126 recv_from=92 neighbors_before=1
+[ELITE][CAM] t=15.9631 self=126 neighbors_after=2
+[ELITE][CAM] t=15.9631 self=124 recv_from=92 neighbors_before=2
+[ELITE][CAM] t=15.9631 self=124 neighbors_after=2
+[ELITE][TICK] t=16 stationId=4 inSession=0 neighbors=0
+[ELITE][TICK] t=16 stationId=44 inSession=0 neighbors=0
+[ELITE][TICK] t=16 stationId=84 inSession=0 neighbors=0
+[ELITE][TICK] t=16.1 stationId=5 inSession=0 neighbors=0
+[ELITE][TICK] t=16.1 stationId=45 inSession=0 neighbors=0
+[ELITE][TICK] t=16.1 stationId=85 inSession=0 neighbors=0
+[ELITE][CAM] t=16.1846 self=126 recv_from=27 neighbors_before=2
+[ELITE][CAM] t=16.1846 self=126 neighbors_after=2
+[ELITE][CAM] t=16.2631 self=126 recv_from=92 neighbors_before=2
+[ELITE][CAM] t=16.2631 self=126 neighbors_after=2
+[ELITE][TICK] t=16.3 stationId=6 inSession=0 neighbors=0
+[ELITE][TICK] t=16.3 stationId=46 inSession=0 neighbors=0
+[ELITE][TICK] t=16.3 stationId=86 inSession=0 neighbors=1
+[ELITE][TICK] t=16.4 stationId=7 inSession=0 neighbors=0
+[ELITE][TICK] t=16.4 stationId=47 inSession=0 neighbors=0
+[ELITE][TICK] t=16.4 stationId=87 inSession=0 neighbors=0
+[ELITE][TICK] t=16.5 stationId=8 inSession=0 neighbors=0
+[ELITE][TICK] t=16.5 stationId=48 inSession=0 neighbors=0
+[ELITE][TICK] t=16.5 stationId=88 inSession=0 neighbors=0
+[ELITE][CAM] t=16.5631 self=132 recv_from=92 neighbors_before=0
+[ELITE][CAM] t=16.5631 self=132 neighbors_after=1
+[ELITE][TICK] t=16.6 stationId=9 inSession=0 neighbors=0
+[ELITE][TICK] t=16.6 stationId=49 inSession=0 neighbors=1
+[ELITE][TICK] t=16.6 stationId=89 inSession=0 neighbors=0
+[ELITE][CAM] t=16.7846 self=133 recv_from=27 neighbors_before=0
+[ELITE][CAM] t=16.7846 self=133 neighbors_after=1
+[ELITE][CAM] t=16.7846 self=132 recv_from=27 neighbors_before=1
+[ELITE][CAM] t=16.7846 self=132 neighbors_after=2
+[ELITE][TICK] t=16.8 stationId=10 inSession=0 neighbors=0
+[ELITE][TICK] t=16.8 stationId=50 inSession=0 neighbors=0
+[ELITE][TICK] t=16.8 stationId=90 inSession=0 neighbors=0
+[ELITE][CAM] t=16.8631 self=133 recv_from=92 neighbors_before=1
+[ELITE][CAM] t=16.8631 self=133 neighbors_after=2
+[ELITE][CAM] t=16.8631 self=132 recv_from=92 neighbors_before=2
+[ELITE][CAM] t=16.8631 self=132 neighbors_after=2
+[ELITE][TICK] t=16.9 stationId=11 inSession=0 neighbors=0
+[ELITE][TICK] t=16.9 stationId=51 inSession=0 neighbors=0
+[ELITE][TICK] t=16.9 stationId=91 inSession=0 neighbors=1
+[ELITE][TICK] t=17 stationId=12 inSession=0 neighbors=0
+[ELITE][TICK] t=17 stationId=52 inSession=0 neighbors=1
+[ELITE][TICK] t=17 stationId=92 inSession=0 neighbors=1
+[ELITE][CAM] t=17.0846 self=133 recv_from=27 neighbors_before=2
+[ELITE][CAM] t=17.0846 self=133 neighbors_after=2
+[ELITE][TICK] t=17.1 stationId=13 inSession=0 neighbors=0
+[ELITE][TICK] t=17.1 stationId=53 inSession=0 neighbors=0
+[ELITE][TICK] t=17.1 stationId=93 inSession=0 neighbors=0
+[ELITE][TICK] t=17.3 stationId=14 inSession=0 neighbors=0
+[ELITE][TICK] t=17.3 stationId=54 inSession=0 neighbors=0
+[ELITE][TICK] t=17.3 stationId=94 inSession=0 neighbors=0
+[POISSON] GenerateOneFlow invoked totalApps=138 rsuApps=0
+[POISSON] Selected src=111 dst=10
+[POISSON] TraCI fetch dst=10 xy=(3723.92,994.75)
+[POISSON] Trigger RequestRoute src=111 dst=10
+[ELTI] RequestRoute stationId=111 dst=10 msgType=0
+[ELITE][AI] call GetAction stationId=111 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=111 aiKey=2333
+[ELITE][AI] Env sent to controller stationId=111 simTime=17.305 neighbors=64 queueLen=2 nextTargetHint=2 dstHint=25
+[ELITE][AI] Action received stationId=111 policyId=1 pathLen=8 firstHop=2
+[ELITE][GUC] use geoArea lon=1000 lat=0 r=25 nh=0 tgt=2
+[ELITE][GUC] use geoArea lon=134.331 lat=-5.25 r=25 nh=27 tgt=2
+[ELITE][GUC] use geoArea lon=129.675 lat=-5.25 r=25 nh=27 tgt=2
+[ELITE][GUC] use geoArea lon=125.015 lat=-5.25 r=25 nh=27 tgt=2
+[ELITE][GUC] use geoArea lon=148.298 lat=-1.75 r=25 nh=27 tgt=2
+[ELITE][TICK] t=17.4 stationId=15 inSession=1 neighbors=0
+[ELITE][TICK] t=17.4 stationId=55 inSession=0 neighbors=0
+[ELITE][TICK] t=17.4 stationId=95 inSession=0 neighbors=0
+[ELITE][CAM] t=17.4631 self=139 recv_from=92 neighbors_before=0
+[ELITE][CAM] t=17.4631 self=139 neighbors_after=1
+[ELITE][TICK] t=17.5 stationId=16 inSession=0 neighbors=0
+[ELITE][TICK] t=17.5 stationId=56 inSession=0 neighbors=0
+[ELITE][TICK] t=17.5 stationId=96 inSession=0 neighbors=0
+[ELITE][TICK] t=17.6 stationId=17 inSession=0 neighbors=0
+[ELITE][TICK] t=17.6 stationId=57 inSession=0 neighbors=0
+[ELITE][TICK] t=17.6 stationId=97 inSession=0 neighbors=0
+[ELITE][CAM] t=17.6846 self=139 recv_from=27 neighbors_before=1
+[ELITE][CAM] t=17.6846 self=139 neighbors_after=2
+[ELITE][CAM] t=17.7631 self=139 recv_from=92 neighbors_before=2
+[ELITE][CAM] t=17.7631 self=139 neighbors_after=2
+[ELITE][TICK] t=17.8 stationId=18 inSession=0 neighbors=0
+[ELITE][TICK] t=17.8 stationId=58 inSession=0 neighbors=1
+[ELITE][TICK] t=17.8 stationId=98 inSession=0 neighbors=0
+[ELITE][TICK] t=17.9 stationId=19 inSession=0 neighbors=0
+[ELITE][TICK] t=17.9 stationId=59 inSession=0 neighbors=0
+[ELITE][TICK] t=17.9 stationId=99 inSession=0 neighbors=0
+[ELITE][CAM] t=17.9846 self=142 recv_from=27 neighbors_before=0
+[ELITE][CAM] t=17.9846 self=142 neighbors_after=1
+[ELITE][TICK] t=18 stationId=20 inSession=0 neighbors=0
+[ELITE][TICK] t=18 stationId=60 inSession=0 neighbors=0
+[ELITE][TICK] t=18 stationId=100 inSession=0 neighbors=0
+[ELITE][CAM] t=18.0631 self=142 recv_from=92 neighbors_before=1
+[ELITE][CAM] t=18.0631 self=142 neighbors_after=2
+[ELITE][TICK] t=18.1 stationId=21 inSession=0 neighbors=0
+[ELITE][TICK] t=18.1 stationId=61 inSession=0 neighbors=0
+[ELITE][TICK] t=18.1 stationId=101 inSession=0 neighbors=0
+[ELITE][CAM] t=18.2846 self=142 recv_from=27 neighbors_before=2
+[ELITE][CAM] t=18.2846 self=142 neighbors_after=2
+[ELITE][TICK] t=18.3 stationId=22 inSession=0 neighbors=0
+[ELITE][TICK] t=18.3 stationId=62 inSession=0 neighbors=0
+[ELITE][TICK] t=18.3 stationId=102 inSession=0 neighbors=0
+[ELITE][TICK] t=18.4 stationId=23 inSession=0 neighbors=0
+[ELITE][TICK] t=18.4 stationId=63 inSession=0 neighbors=0
+[ELITE][TICK] t=18.4 stationId=103 inSession=0 neighbors=0
+[ELITE][TICK] t=18.5 stationId=24 inSession=0 neighbors=0
+[ELITE][TICK] t=18.5 stationId=64 inSession=0 neighbors=0
+[ELITE][TICK] t=18.5 stationId=104 inSession=0 neighbors=0
+[ELITE][CAM] t=18.5846 self=147 recv_from=27 neighbors_before=0
+[ELITE][CAM] t=18.5846 self=147 neighbors_after=1
+[ELITE][TICK] t=18.6 stationId=25 inSession=0 neighbors=0
+[ELITE][TICK] t=18.6 stationId=65 inSession=0 neighbors=0
+[ELITE][TICK] t=18.6 stationId=105 inSession=0 neighbors=0
+[ELITE][CAM] t=18.6631 self=149 recv_from=92 neighbors_before=0
+[ELITE][CAM] t=18.6631 self=149 neighbors_after=1
+[ELITE][CAM] t=18.6631 self=147 recv_from=92 neighbors_before=1
+[ELITE][CAM] t=18.6631 self=147 neighbors_after=2
+[POISSON] GenerateOneFlow invoked totalApps=149 rsuApps=0
+[POISSON] Selected src=33 dst=61
+[POISSON] TraCI fetch dst=61 xy=(2508.75,2624.71)
+[POISSON] Trigger RequestRoute src=33 dst=61
+[ELTI] RequestRoute stationId=33 dst=61 msgType=0
+[ELITE][AI] call GetAction stationId=33 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=33 aiKey=2333
+[ELITE][AI] Env sent to controller stationId=33 simTime=18.6848 neighbors=64 queueLen=0 nextTargetHint=40 dstHint=50
+[ELITE][AI] Action received stationId=33 policyId=1 pathLen=5 firstHop=40
+[ELITE][GUC] use geoArea lon=2000 lat=2000 r=25 nh=0 tgt=40
+[ELITE][TICK] t=18.8 stationId=26 inSession=0 neighbors=1
+[ELITE][TICK] t=18.8 stationId=66 inSession=0 neighbors=0
+[ELITE][TICK] t=18.8 stationId=106 inSession=0 neighbors=0
+[ELITE][CAM] t=18.8849 self=149 recv_from=27 neighbors_before=1
+[ELITE][CAM] t=18.8849 self=149 neighbors_after=2
+[ELITE][CAM] t=18.8849 self=147 recv_from=27 neighbors_before=2
+[ELITE][CAM] t=18.8849 self=147 neighbors_after=2
+[ELITE][TICK] t=18.9 stationId=27 inSession=0 neighbors=0
+[ELITE][TICK] t=18.9 stationId=67 inSession=0 neighbors=0
+[ELITE][TICK] t=18.9 stationId=107 inSession=0 neighbors=0
+[ELITE][CAM] t=18.9631 self=149 recv_from=92 neighbors_before=2
+[ELITE][CAM] t=18.9631 self=149 neighbors_after=2
+[ELITE][TICK] t=19 stationId=28 inSession=0 neighbors=0
+[ELITE][TICK] t=19 stationId=68 inSession=0 neighbors=0
+[ELITE][TICK] t=19 stationId=108 inSession=0 neighbors=0
+[ELITE][TICK] t=19.1 stationId=29 inSession=0 neighbors=0
+[ELITE][TICK] t=19.1 stationId=69 inSession=0 neighbors=1
+[ELITE][TICK] t=19.1 stationId=109 inSession=0 neighbors=0
+[ELITE][CAM] t=19.2631 self=152 recv_from=92 neighbors_before=0
+[ELITE][CAM] t=19.2631 self=152 neighbors_after=1
+[ELITE][TICK] t=19.3 stationId=30 inSession=0 neighbors=0
+[ELITE][TICK] t=19.3 stationId=70 inSession=0 neighbors=0
+[ELITE][TICK] t=19.3 stationId=110 inSession=0 neighbors=0
+[POISSON] GenerateOneFlow invoked totalApps=154 rsuApps=0
+[POISSON] Selected src=46 dst=33
+[POISSON] TraCI fetch dst=33 xy=(2207.69,1998.25)
+[POISSON] Trigger RequestRoute src=46 dst=33
+[ELTI] RequestRoute stationId=46 dst=33 msgType=3
+[ELITE][AI] call GetAction stationId=46 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=46 aiKey=2333
+[ELITE][AI] Env sent to controller stationId=46 simTime=19.3926 neighbors=64 queueLen=0 nextTargetHint=31 dstHint=40
+[ELITE][AI] Action received stationId=46 policyId=1 pathLen=4 firstHop=31
+[ELITE][GUC] use geoArea lon=2000 lat=1500 r=25 nh=0 tgt=31
+[ELITE][GUC] use geoArea lon=157.616 lat=-1.75 r=25 nh=27 tgt=31
+[ELITE][TICK] t=19.4 stationId=31 inSession=0 neighbors=0
+[ELITE][TICK] t=19.4 stationId=71 inSession=0 neighbors=0
+[ELITE][TICK] t=19.4 stationId=111 inSession=1 neighbors=2
+[ELITE][TICK] t=19.5 stationId=32 inSession=0 neighbors=0
+[ELITE][TICK] t=19.5 stationId=72 inSession=0 neighbors=0
+[ELITE][TICK] t=19.5 stationId=112 inSession=0 neighbors=0
+[ELITE][CAM] t=19.5631 self=155 recv_from=92 neighbors_before=0
+[ELITE][CAM] t=19.5631 self=155 neighbors_after=1
+[ELITE][CAM] t=19.5631 self=154 recv_from=92 neighbors_before=0
+[ELITE][CAM] t=19.5631 self=154 neighbors_after=1
+[ELITE][TICK] t=19.6 stationId=33 inSession=1 neighbors=0
+[ELITE][TICK] t=19.6 stationId=73 inSession=0 neighbors=0
+[ELITE][TICK] t=19.6 stationId=113 inSession=0 neighbors=0
+[ELITE][CAM] t=19.608 self=154 recv_from=155 neighbors_before=1
+[ELITE][CAM] t=19.608 self=154 neighbors_after=2
+[ELITE][TICK] t=19.8 stationId=34 inSession=0 neighbors=0
+[ELITE][TICK] t=19.8 stationId=74 inSession=0 neighbors=0
+[ELITE][TICK] t=19.8 stationId=114 inSession=0 neighbors=0
+[POISSON] GenerateOneFlow invoked totalApps=158 rsuApps=0
+[POISSON] Selected src=155 dst=45
+[POISSON] TraCI fetch dst=45 xy=(3508.75,2169.49)
+[POISSON] Trigger RequestRoute src=155 dst=45
+[ELTI] RequestRoute stationId=155 dst=45 msgType=0
+[ELITE][AI] call GetAction stationId=155 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=155 aiKey=2333
+[ELITE][AI] Env sent to controller stationId=155 simTime=19.8365 neighbors=64 queueLen=1 nextTargetHint=0 dstHint=43
+[ELITE][AI] Action received stationId=155 policyId=1 pathLen=12 firstHop=0
+[ELITE][CAM] t=19.8631 self=155 recv_from=92 neighbors_before=1
+[ELITE][CAM] t=19.8631 self=155 neighbors_after=1
+[ELITE][TICK] t=19.9 stationId=35 inSession=0 neighbors=0
+[ELITE][TICK] t=19.9 stationId=75 inSession=0 neighbors=1
+[ELITE][TICK] t=19.9 stationId=115 inSession=0 neighbors=0
+[ELITE][TICK] t=20 stationId=36 inSession=0 neighbors=0
+[ELITE][TICK] t=20 stationId=76 inSession=0 neighbors=1
+[ELITE][TICK] t=20 stationId=116 inSession=0 neighbors=0
+[ELITE][TICK] t=20.1 stationId=37 inSession=0 neighbors=0
+[ELITE][TICK] t=20.1 stationId=77 inSession=0 neighbors=0
+[ELITE][TICK] t=20.1 stationId=117 inSession=0 neighbors=0
+[POISSON] GenerateOneFlow invoked totalApps=160 rsuApps=0
+[POISSON] Selected src=25 dst=61
+[POISSON] Use cached dstPos dst=61 xy=(2508.75,2624.71)
+[POISSON] Trigger RequestRoute src=25 dst=61
+[ELTI] RequestRoute stationId=25 dst=61 msgType=1
+[ELITE][AI] call GetAction stationId=25 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=25 aiKey=2333
+[ELITE][AI] Env sent to controller stationId=25 simTime=20.1967 neighbors=64 queueLen=0 nextTargetHint=47 dstHint=50
+[ELITE][AI] Action received stationId=25 policyId=1 pathLen=6 firstHop=47
+[ELITE][GUC] use geoArea lon=1000 lat=2500 r=25 nh=0 tgt=47
+[ELITE][GUC] use geoArea lon=1000 lat=2000 r=25 nh=0 tgt=38
+[ELITE][GUC] use geoArea lon=8.75 lat=75.2807 r=25 nh=92 tgt=47
+[ELITE][GUC] use geoArea lon=143.641 lat=-5.25 r=25 nh=27 tgt=47
+[ELITE][TICK] t=20.3 stationId=38 inSession=0 neighbors=1
+[ELITE][TICK] t=20.3 stationId=78 inSession=0 neighbors=0
+[ELITE][TICK] t=20.3 stationId=118 inSession=0 neighbors=0
+[ELITE][TICK] t=20.4 stationId=39 inSession=0 neighbors=0
+[ELITE][TICK] t=20.4 stationId=79 inSession=0 neighbors=0
+[ELITE][TICK] t=20.4 stationId=119 inSession=0 neighbors=0
+[ELITE][TICK] t=20.5 stationId=0 inSession=0 neighbors=0
+[ELITE][TICK] t=20.5 stationId=40 inSession=0 neighbors=0
+[ELITE][TICK] t=20.5 stationId=80 inSession=0 neighbors=0
+[ELITE][TICK] t=20.5 stationId=120 inSession=0 neighbors=0
+[ELITE][TICK] t=20.6 stationId=1 inSession=0 neighbors=0
+[ELITE][TICK] t=20.6 stationId=41 inSession=0 neighbors=0
+[ELITE][TICK] t=20.6 stationId=81 inSession=0 neighbors=1
+[ELITE][TICK] t=20.6 stationId=121 inSession=0 neighbors=2
+[ELITE][TICK] t=20.8 stationId=2 inSession=0 neighbors=0
+[ELITE][TICK] t=20.8 stationId=42 inSession=0 neighbors=0
+[ELITE][TICK] t=20.8 stationId=82 inSession=0 neighbors=0
+[ELITE][TICK] t=20.8 stationId=122 inSession=0 neighbors=0
+[ELITE][TICK] t=20.9 stationId=43 inSession=0 neighbors=0
+[ELITE][TICK] t=20.9 stationId=83 inSession=0 neighbors=0
+[ELITE][TICK] t=20.9 stationId=123 inSession=0 neighbors=0
+[ELITE][TICK] t=21 stationId=4 inSession=0 neighbors=0
+[ELITE][TICK] t=21 stationId=44 inSession=0 neighbors=0
+[ELITE][TICK] t=21 stationId=84 inSession=0 neighbors=0
+[ELITE][TICK] t=21 stationId=124 inSession=0 neighbors=2
+[ELITE][TICK] t=21.1 stationId=5 inSession=0 neighbors=0
+[ELITE][TICK] t=21.1 stationId=45 inSession=0 neighbors=0
+[ELITE][TICK] t=21.1 stationId=85 inSession=0 neighbors=0
+[ELITE][TICK] t=21.1 stationId=125 inSession=0 neighbors=0
+[ELITE][TICK] t=21.3 stationId=6 inSession=0 neighbors=0
+[ELITE][TICK] t=21.3 stationId=46 inSession=0 neighbors=0
+[ELITE][TICK] t=21.3 stationId=86 inSession=0 neighbors=1
+[ELITE][TICK] t=21.3 stationId=126 inSession=0 neighbors=2
+[ELITE][TICK] t=21.4 stationId=7 inSession=0 neighbors=0
+[ELITE][TICK] t=21.4 stationId=47 inSession=0 neighbors=0
+[ELITE][TICK] t=21.4 stationId=87 inSession=0 neighbors=0
+[ELITE][TICK] t=21.4 stationId=127 inSession=0 neighbors=0
+[ELITE][TICK] t=21.5 stationId=8 inSession=0 neighbors=0
+[ELITE][TICK] t=21.5 stationId=48 inSession=0 neighbors=0
+[ELITE][TICK] t=21.5 stationId=88 inSession=0 neighbors=0
+[ELITE][TICK] t=21.5 stationId=128 inSession=0 neighbors=0
+[POISSON] GenerateOneFlow invoked totalApps=172 rsuApps=0
+[POISSON] Selected src=88 dst=51
+[POISSON] Use cached dstPos dst=51 xy=(1508.75,2019.83)
+[POISSON] Trigger RequestRoute src=88 dst=51
+[ELTI] RequestRoute stationId=88 dst=51 msgType=2
+[ELITE][AI] call GetAction stationId=88 aiKey=2333
+[ELITE][AI] Enter GetAction stationId=88 aiKey=2333
+[ELITE][AI] Env sent to controller stationId=88 simTime=21.5713 neighbors=64 queueLen=0 nextTargetHint=23 dstHint=39
+[ELITE][AI] Action received stationId=88 policyId=1 pathLen=5 firstHop=23
+[ELITE][GUC] use geoArea lon=2500 lat=1000 r=25 nh=0 tgt=23
+[ELITE][TICK] t=21.6 stationId=9 inSession=0 neighbors=0
+[ELITE][TICK] t=21.6 stationId=49 inSession=0 neighbors=1
+[ELITE][TICK] t=21.6 stationId=89 inSession=0 neighbors=0
+[ELITE][TICK] t=21.6 stationId=129 inSession=0 neighbors=0
+[ELITE][TICK] t=21.8 stationId=10 inSession=0 neighbors=0
+[ELITE][TICK] t=21.8 stationId=50 inSession=0 neighbors=0
+[ELITE][TICK] t=21.8 stationId=90 inSession=0 neighbors=0
+[ELITE][TICK] t=21.8 stationId=130 inSession=0 neighbors=0
+[ELITE][TICK] t=21.9 stationId=11 inSession=0 neighbors=0
+[ELITE][TICK] t=21.9 stationId=51 inSession=0 neighbors=0
+[ELITE][TICK] t=21.9 stationId=91 inSession=0 neighbors=1
+[ELITE][TICK] t=21.9 stationId=131 inSession=0 neighbors=0
+[ELITE][TICK] t=22 stationId=12 inSession=0 neighbors=0
+[ELITE][TICK] t=22 stationId=52 inSession=0 neighbors=1
+[ELITE][TICK] t=22 stationId=92 inSession=0 neighbors=1
+[ELITE][TICK] t=22 stationId=132 inSession=0 neighbors=2
+[ELITE][TICK] t=22.1 stationId=13 inSession=0 neighbors=0
+[ELITE][TICK] t=22.1 stationId=53 inSession=0 neighbors=0
+[ELITE][TICK] t=22.1 stationId=93 inSession=0 neighbors=0
+[ELITE][TICK] t=22.1 stationId=133 inSession=0 neighbors=2
+[ELITE][TICK] t=22.3 stationId=14 inSession=0 neighbors=0
+[ELITE][TICK] t=22.3 stationId=54 inSession=0 neighbors=0
+[ELITE][TICK] t=22.3 stationId=94 inSession=0 neighbors=0
+[ELITE][TICK] t=22.3 stationId=134 inSession=0 neighbors=0
+[ELITE][TICK] t=22.4 stationId=15 inSession=0 neighbors=0
+[ELITE][TICK] t=22.4 stationId=55 inSession=0 neighbors=0
+[ELITE][TICK] t=22.4 stationId=95 inSession=0 neighbors=0
+[ELITE][TICK] t=22.4 stationId=135 inSession=0 neighbors=0
+[ELITE][TICK] t=22.5 stationId=16 inSession=0 neighbors=0
+[ELITE][TICK] t=22.5 stationId=56 inSession=0 neighbors=0
+[ELITE][TICK] t=22.5 stationId=96 inSession=0 neighbors=0
+[ELITE][TICK] t=22.5 stationId=136 inSession=0 neighbors=0
+[ELITE][TICK] t=22.6 stationId=17 inSession=0 neighbors=0
+[ELITE][TICK] t=22.6 stationId=57 inSession=0 neighbors=0
+[ELITE][TICK] t=22.6 stationId=97 inSession=0 neighbors=0
+[ELITE][TICK] t=22.6 stationId=137 inSession=0 neighbors=0
+[ELITE][TICK] t=22.8 stationId=18 inSession=0 neighbors=0
+[ELITE][TICK] t=22.8 stationId=58 inSession=0 neighbors=1
+[ELITE][TICK] t=22.8 stationId=98 inSession=0 neighbors=0
+[ELITE][TICK] t=22.8 stationId=138 inSession=0 neighbors=0
+Error: tcpip::Socket::recvAndCheck @ recv: peer shutdown
+Quitting (on error).
+Command 'build/src/automotive/examples/ns3-dev-ELTI-optimized --junction-legend=/home/Lyh/ELITE-zg-main/dtn_out/junction_legend.csv --poisson-enable=1 --poisson-lambda=0.5 --sumo-wait=20 --sim-time=30 --sumo-config=/home/Lyh/VaN3Twin/ns-3-dev/src/automotive/examples/grid_network_large/grid_network_fed/grid.sumocfg --rsu-stations=/home/Lyh/VaN3Twin/ns-3-dev/src/automotive/examples/grid_network_large/grid_network_fed/stations.xml' died with <Signals.SIGTERM: 15>.

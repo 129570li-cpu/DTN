@@ -1,0 +1,156 @@
+ELITE-fusion + NS‑3 使用方法（严格按论文流程）
+
+一、准备
+- 代码位置：
+  - 控制器/算法：/home/Lyh/ELITE-zg-main/ELITE-fusion
+  - NS‑3 场景：/home/Lyh/VaN3Twin/ns-3-dev/src/automotive/examples/ELTI
+  - SUMO 路网与 FCD：/home/Lyh/ELITE-zg-main/grid_network（包含 grid.net.xml 与 grid_fcd.out.xml）
+- 依赖：ns3-ai（已在 VaN3Twin 源码中提供）
+  - 运行前设置 PYTHONPATH=/home/Lyh/VaN3Twin/ns-3-dev/contrib/ns3-ai/py_interface
+
+二、启动控制器（DTN：SPL→EFG→APN）
+1) 环境与目录
+   export PYTHONPATH=/home/Lyh/VaN3Twin/ns-3-dev/contrib/ns3-ai/py_interface
+   cd /home/Lyh/ELITE-zg-main
+2) 启动（训练/加载 Q 表 → 融合 → 监听 ns3-ai；会导出 dtn_out/junction_legend.csv）
+   python3 ELITE-fusion/controller_server.py \
+     /home/Lyh/ELITE-zg-main/grid_network/grid.net.xml \
+     dtn_out 6000000 300 1234 4096 2333
+   说明：
+   - 6000000 为带宽（bps），300 为通信半径（m）
+   - 1234/4096 为内存池 key/size，2333 为共享内存块 key（与 NS‑3 端一致）
+   - 可选：设置环境变量 SPL_PERIOD_S>0（默认 600s）开启周期重训。若同时设置 ELITE_FCD_PATH=/home/Lyh/VaN3Twin/ns-3-dev/src/automotive/examples/grid_network/grid_fcd.out.xml，则重训会使用该 FCD 构造 past/present/future 速度/密度图；否则退回 0.85/1/1.15 的固定缩放。
+
+三、编译/运行 NS‑3 场景（APN：单路径多跳转发）
+1) 编译（非 root 用户）：
+   cd /home/Lyh/VaN3Twin/ns-3-dev
+   ./ns3 configure --build-profile=debug --enable-examples --enable-tests
+   ./ns3 build ELTI
+2) 运行（Poisson 流场景；默认 0.5 flows/s）：
+   sudo -u Lyh -H ./ns3 run ELTI -- \
+     --junction-legend=/home/Lyh/ELITE-zg-main/dtn_out/junction_legend.csv \
+     --poisson-enable=1 --poisson-lambda=0.5 \
+     --arrival-radius=25 --neighbor-timeout=2 \
+     --ttl-per-hop=2 --ttl-base=4 \
+     --channel-model=TwoRay --tx-power=23 --tx-height=1.5 \
+     --elite-stats-file=elite_path_stats.csv \
+     --sim-time=100
+   常用参数：
+   - 流量：--poisson-enable(0/1) --poisson-lambda(流/秒)
+   - 到达&邻居：--arrival-radius(m) --neighbor-timeout(s)
+   - TTL：--ttl-per-hop --ttl-base（ttl≈2*|path|+4，建议默认）
+   - 传播：--channel-model=Default/TwoRay/LogDistance --pathloss-exp --tx-height
+   - 输出：--elite-stats-file（路径统计 CSV）
+   提示：
+   - 已接入四类消息类型（0/1/2/3=安全/效率/信息/娱乐），Poisson 流按 0.4/0.3/0.2/0.1 采样；
+   - 发起请求时，应用会将“源/宿最近路口 id”编码进 ns3‑ai 观测，控制器用 BP 表先求 Lbas 并按 Lavg/Bw（0.3/0.7）定档，然后 APN 选 HRF/LDF/LBF，并按负载档选择时态表（高载→past，低载→future，否则 present）。
+
+四、输出与统计
+ - 控制器：日志显示 R0 更新、APN 表迭代；dtn_out/ 保存 Q 表与路口表
+ - NS‑3：控制台输出 PRR/Latency（PRRSupervisor）；生成 elite_path_stats.csv
+  - CSV 字段：src,dst,success,ADsd,HCsd,RCsd,RO,nsd,failReason(0/TTL/VOID)
+- 汇总脚本：
+   python3 ELITE-fusion/scripts/summarize_elite_stats.py elite_path_stats.csv
+- 训练质量自检（离线）：
+   python3 ELITE-fusion/scripts/eval_qtables.py --net grid_network/grid.net.xml --dir dtn_out --trials 200
+  显示四张表的 min/max/mean/稀疏度，以及“基于 Q 的贪心路径”成功率/平均步数/AD/HC/RC，用于判断 Q 是否已初步收敛。
+ - 控制开销（CO，论文口径）：
+   - 方案A：无业务时（--poisson-enable=0）直接跑仿真观测；
+   - 方案B：用 FCD+重训速率估算（msgs/s）：
+     python3 ELITE-fusion/scripts/measure_co.py \
+       --fcd /home/Lyh/ELITE-zg-main/grid_network/grid_fcd.out.xml \
+       --episodes-present 4000 --episodes-past 3000 --episodes-future 3000 \
+       --spl-period 60
+
+五、与论文对齐（要点）
+- SPL：四张单指标 Q 表训练/加载；可选周期在线重训（并行学习）
+- EFG：按论文模糊融合得到 HRF/LDF/LBF；APN 依据消息类型×负载档选择策略
+- 负载映射：按路径总字节率 Lavg（数据1024B/跳、控制256B/条，含请求/应答/上报）与带宽 Bw 归一映射至 3 档
+- R0：a·g(ADsd)+b·q(HCsd)+γ·l(RCsd)（分段指标取平均）；反馈后迭代 P(state,action)
+- 多跳：单路径逐跳 nextHopSid；TTL 自适应；邻居由 GeoNet CAM 维护（2s 过期剔除）
+ - 完美预测：若提供 FCD（grid_fcd.out.xml），将按时间三等分构建 past/present/future 三套 per‑edge 速度/密度图训练 DTN，满足论文“未来可知”设定
+
+六、校准建议（802.11p≈300 m 可靠）
+- 建议 TwoRay + TxPower=23 dBm + tx-height=1.5；必要时调 --pathloss-exp（LogDistance）或 TxPower
+- 到达半径 20–30 m；邻居超时 1.5–2.0 s；TTL 默认 2*|path|+4
+
+七、常见问题
+- ns3 脚本拒绝 root：用普通用户执行 ./ns3 configure/build/run
+- ns3‑ai 连接失败：确认 PYTHONPATH 与双方共享内存 key 一致（2333）
+- 路口不一致：确保 --junction-legend 指向控制器导出的 dtn_out/junction_legend.csv
+- 控制器先启动即退出/段错误：历史版本未在 Python 侧初始化 ns3‑ai 内存池，已在 controller_server.py 内补充 Init（当未传 ns3_cmd 时会调用 Ns3AIInit）。现在可以先启动控制器、再启动 ns‑3。
+
+八、一键脚本（推荐）
+（已增强：自动清理 ns3‑ai 共享内存、统一用户、等待控制器就绪、墙钟超时防卡、NS_LOG 纠错）
+
+- 推荐用法（root 执行最稳，内部以 Lyh 运行控制器与 ns‑3）
+  - 60s：
+    ELITE_DEBUG=1 SUMO_STEP_LOG=1 SIM_TIME=60 bash ELITE-fusion/scripts/run_elite_ns3.sh
+  - 100s：
+    ELITE_DEBUG=1 SUMO_STEP_LOG=1 SIM_TIME=100 bash ELITE-fusion/scripts/run_elite_ns3.sh
+  - 200s（建议加长墙钟超时）：
+    ELITE_DEBUG=1 SUMO_STEP_LOG=1 SPL_PERIOD_S=600 \
+      ELITE_FCD_PATH=/home/Lyh/VaN3Twin/ns-3-dev/src/automotive/examples/grid_network/grid_fcd.out.xml \
+      SIM_TIME=200 WALL_TIMEOUT=600 bash ELITE-fusion/scripts/run_elite_ns3.sh
+  - 带组件日志（注意冒号分隔；脚本会自动把逗号替换为冒号）：
+    NS_LOG="TraciClient=level_info:EliteForwarderApp=level_info|prefix_time" SIM_TIME=60 bash ELITE-fusion/scripts/run_elite_ns3.sh
+
+- 可用环境变量（仅列出常用；其余见脚本注释 ELITE-fusion/scripts/run_elite_ns3.sh）
+  - SIM_TIME（默认 100）仿真秒数
+  - WALL_TIMEOUT（默认 SIM_TIME+120）墙钟超时，超时自动停止 ns‑3
+  - SUMO_STEP_LOG（默认 0）设 1 打印 SUMO 步进 Step # 行
+  - NS_LOG（可选）例如 'TraciClient=level_info:EliteForwarderApp=level_info|prefix_time'
+  - TARGET_USER（默认 Lyh）控制器与 ns‑3 统一使用该非 root 用户运行
+  - KILL_OLD（默认 1）启动前清理遗留 ns‑3/sumo/controller 进程
+  - CLEAN_SHM（默认 1）启动前清理 ns3‑ai 共享内存 key（1234/2333）
+  - 其他：NS3_DIR、CTRL_PY、NET_XML、OUT_DIR、POISSON_ENABLE、POISSON_LAMBDA 等
+
+- 非 root 用法（不推荐；若上次用过 root，请先清理）
+  - sudo ipcrm -M 0x000004d2; sudo ipcrm -M 0x0000091d
+  - sudo chown -R Lyh:Lyh /home/Lyh/ELITE-zg-main/dtn_out
+  - 然后以 Lyh 运行：
+    sudo -u Lyh -H ELITE_DEBUG=1 SIM_TIME=60 bash ELITE-fusion/scripts/run_elite_ns3.sh
+
+- 日志位置
+  - 控制器：/home/Lyh/ELITE-zg-main/dtn_out/controller.log
+  - NS‑3（汇总）：/home/Lyh/ELITE-zg-main/dtn_out/ns3_run.log
+  - NS‑3（工程侧）：/home/Lyh/VaN3Twin/ns-3-dev/src/automotive/examples/ELTI/run_ELTI_auto.log
+  - SUMO（可选）：/home/Lyh/VaN3Twin/ns-3-dev/src/automotive/examples/grid_network/SumoMsg.log
+
+- NS‑3 侧转发追踪（用于核对“是否按控制器下发的路口序列选择邻居并转发”）
+  - 开启方法：在运行 ns‑3 前设置 ELITE_NS3_TRACE=1（默认关闭）
+    例如：
+      ELITE_NS3_TRACE=1 ELITE_DEBUG=1 SUMO_STEP_LOG=1 SIM_TIME=60 \ 
+        NS_LOG="TraciClient=level_info:EliteForwarderApp=level_info|prefix_time" \
+        bash ELITE-fusion/scripts/run_elite_ns3.sh
+  - 输出文件：/home/Lyh/ELITE-zg-main/dtn_out/elite_forward_trace.csv
+  - CSV 列（逗号分隔）：
+    time,veh,evt,pathId,policy,pathLen,nextIdx,targetJ,ttl,selected,nextList
+    * REQ 事件：在发起路由请求并接收控制器 action 后记录；nextList 为整条路口序列（如 "8-7-3-0-1"），selected=0
+    * FWD 事件：每次逐跳转发时记录；nextList 为“候选邻居及其到目标路口距离”，形如 "12@35.1;34@77.2;…"；selected 为实际选择的邻居 id
+    * nextIdx/targetJ 与控制器下发的 area path 同步推进（到达目标路口时 nextIdx 自增）
+
+- 常见现象说明
+  - ns‑3 正常结束后，SUMO 会报 “peer shutdown”，属于正常收尾。
+  - 若控制台未实时刷 Step 行，可看 ns3_run.log 或 FCD 文件增长确认推进：
+    /home/Lyh/VaN3Twin/ns-3-dev/src/automotive/examples/grid_network/grid_fcd.out.xml
+
+九、200s 运行脚本示例
+- 直接执行示例脚本（内部调用一键脚本，带步进日志与墙钟超时保护）：
+  bash ELITE-fusion/scripts/run_elite_200s_example.sh
+- 等价命令（展开）：
+  ELITE_DEBUG=1 SUMO_STEP_LOG=1 SPL_PERIOD_S=600 \\
+    ELITE_FCD_PATH=/home/Lyh/VaN3Twin/ns-3-dev/src/automotive/examples/grid_network/grid_fcd.out.xml \\
+    SIM_TIME=200 WALL_TIMEOUT=600 \\
+    NS_LOG="TraciClient=level_info:EliteForwarderApp=level_info|prefix_time" \\
+    bash ELITE-fusion/scripts/run_elite_ns3.sh
+
+十、GNN-DQN 离线训练（FD 目录）
+- 入口：`python3 ELITE-fusion/dtn/FD/trainer.py --net-xml grid_network/grid.net.xml --node-features dtn_data/node_features.json --episodes 1000 --output-dir dtn_out/gnn_dqn`
+- 关键参数：
+  - `--policy NAME=wpdr,wrad,wrhc,wrrc`：可多次指定，定义 HRF/LDF/LBF 等权重（默认采用 4 维权重）。
+  - `--baseline-sample-prob/--bfs-sample-prob/--random-walk-prob`：控制采样混合（基线最短路、BFS、随机游走、剩余概率为 Q-guided DFS）。
+  - `--baseline-modes distance,low_queue,low_delay`：基线模式列表，分别代表最短路、低排队（按节点队列长度）与低时延（按 seg_delay）；训练时会随机挑选一种 baseline 生成对照路径，缓解单一最短路带来的采样偏差。
+  - 其余如 `--hidden-dim`、`--buffer-size`、`--failure-reward`、`--dropout` 等与常规 DQN 一致。
+- 图帧/特征：`--node-features` 必填，指向由 FCD 处理得到的多时间窗节点动态特征（多帧 JSON）。Trainer 会自动构建 GraphSAGE 输入序列，并在采样折返时同步更新 Env 中的速度/密度/队列。
+- 训练输出：`dtn_out/gnn_dqn/<policy>/fedg_dqn.pt + id_mapping.json`，控制器（或联邦训练器）加载时保持与训练相同的 ID 映射即可。

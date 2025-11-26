@@ -1,0 +1,2 @@
+step,eps,num_paths,action_hrf,hop_hrf,reward_hrf,loss_hrf,action_ldf,hop_ldf,reward_ldf,loss_ldf,action_lbf,hop_lbf,reward_lbf,loss_lbf
+100,0.8561,8,4,9,1.7303,nan,3,9,1.8207,nan,2,9,1.7304,nan

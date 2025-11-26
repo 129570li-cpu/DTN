@@ -1,0 +1,18 @@
+[19:01:33] Killing leftover processes
+[19:01:34] Starting controller...
+[19:01:34] Waiting for /home/Lyh/ELITE-zg-main/dtn_out/junction_legend.csv
+[19:01:34] Running ns-3...
+[0/2] Re-checking globbed directories...
+ninja: no work to do.
+A transmission power of 30 dBm  will be used.
+Starting simulation... 
+Sumo: wait for socket: 20s
+Loading configuration ... done.
+Warning: Environment variable SUMO_HOME is not set properly, XML validation will fail or use slow website lookups.
+***Starting server on port 3400 ***
+Loading net-file from '/home/Lyh/VaN3Twin/ns-3-dev/src/automotive/examples/grid_network_large/grid_network_fed/grid.net.xml' ... done (145ms).
+Loading additional-files from '/home/Lyh/VaN3Twin/ns-3-dev/src/automotive/examples/grid_network_large/grid_network_fed/stations.xml' ...
+ done (20ms).
+Loading route-files incrementally from '/home/Lyh/VaN3Twin/ns-3-dev/src/automotive/examples/grid_network_large/grid_network_fed/grid.rou.xml'
+Loading done.
+Simulation version 1.23.1 started with time: 0.00.

@@ -1,0 +1,221 @@
+[2 tools called]
+
+我已经审核了更新后的控制器代码。您新增了 **在线微调** 功能，这是很重要的改进！但有几个关键问题需要修复：
+
+---
+
+## ✅ 新增的好功能
+
+### 1. 在线训练 Buffer ✅
+```423:423:ctrl_work/controller_server.py
+online_buffers: Dict[str, deque] = {name: deque(maxlen=512) for name in gnn_router.policy_names}
+```
+
+### 2. 反馈中记录路径 ✅
+```496:496:ctrl_work/controller_server.py
+"path": [int(env.path_ids[i]) for i in range(max(0, env.path_len))],
+```
+
+### 3. 策略权重常量 ✅
+```83:87:ctrl_work/controller_server.py
+DEFAULT_POLICY_WEIGHTS: Dict[str, Tuple[float, float, float, float]] = {
+    "HRF": (0.50, 0.20, 0.20, 0.10),
+    "LDF": (0.20, 0.10, 0.50, 0.20),
+    "LBF": (0.20, 0.10, 0.20, 0.50),
+}
+```
+
+---
+
+## ❌ 需要修复的问题
+
+### 问题 1：`forward_policy` 调用参数错误（严重）
+
+```591:594:ctrl_work/controller_server.py
+q_pred = model.forward_policy(pname, gnn_router.graph.x.to(gnn_router.device),
+                              src_idx, dst_idx, paths,
+                              edge_feat.to(gnn_router.device),
+                              scalar_feat.to(gnn_router.device))
+```
+
+**错误**：`forward_policy` 第二个参数应该是 `node_embs`（GNN 编码后的嵌入），不是原始的 `graph.x`。
+
+**修复**：
+```python
+# 先获取节点嵌入（需要梯度，所以不要用 no_grad）
+node_embs = model.get_embeddings(
+    gnn_router.graph.x.to(gnn_router.device),
+    gnn_router.graph.edge_index.to(gnn_router.device),
+    gnn_router.graph.edge_attr.to(gnn_router.device) if gnn_router.graph.edge_attr is not None else None,
+)
+q_pred = model.forward_policy(pname, node_embs, src_idx, dst_idx, paths_idx,
+                              edge_feat.to(gnn_router.device),
+                              scalar_feat.to(gnn_router.device))
+```
+
+### 问题 2：`src_idx` 和 `dst_idx` 提取错误（严重）
+
+```578:579:ctrl_work/controller_server.py
+src_idx = idx[0][0]
+dst_idx = idx[0][1]
+```
+
+**错误**：`idx` 是 `List[List[int]]`，每个元素是**整条路径的节点索引列表**，不是 `(src, dst)` 元组。
+
+**修复**：
+```python
+# paths 是原始路口 ID 列表，需要转换为图索引
+paths_idx = []
+for p in paths:
+    paths_idx.append([gnn_router.converter.get_idx(node) for node in p])
+# src_idx 和 dst_idx 应该从路径的首尾获取
+src_idx = gnn_router.converter.get_idx(batch[0]["path"][0])
+dst_idx = gnn_router.converter.get_idx(batch[0]["path"][-1])
+```
+
+### 问题 3：奖励计算公式错误
+
+```585:585:ctrl_work/controller_server.py
+rad = 1.0 - ad / max(1e-3, gnn_router.graph.x.size(0))
+```
+
+**错误**：用节点数作为分母没有意义，应该用最大延迟 `mADsd`。
+
+**修复**：
+```python
+# 估算 mADsd（路径延迟上界）
+mADsd = max(ad, 10.0)  # 或者用全局估计
+rad = 1.0 - ad / max(mADsd, 1e-6)
+rad = max(0.0, min(1.0, rad))
+```
+
+### 问题 4：每次都创建新的优化器
+
+```571:571:ctrl_work/controller_server.py
+optim = torch.optim.Adam(model.parameters(), lr=1e-4)
+```
+
+**问题**：每次微调都创建新优化器，会丢失 Adam 的动量状态。
+
+**修复**：在初始化时创建并复用：
+```python
+# 在 run_server 开头：
+online_optimizers: Dict[str, torch.optim.Adam] = {
+    name: torch.optim.Adam(gnn_router.policy_models[name].parameters(), lr=1e-4)
+    for name in gnn_router.policy_names
+}
+
+# 在线微调时：
+optim = online_optimizers[pname]
+```
+
+### 问题 5：`compute_path_features` 返回值未正确使用
+
+```574:574:ctrl_work/controller_server.py
+idx, edge_feat, scalar_feat = gnn_router.compute_path_features(paths, max_hops=MAX_HOPS)
+```
+
+这里 `idx` 返回的是 **转换后的节点索引列表**，但前面 `paths = [b["path"] for b in batch]` 是原始路口 ID。需要确保一致性。
+
+---
+
+## 🔧 完整修复建议
+
+将在线微调部分替换为：
+
+```python
+# 在 run_server 开头初始化优化器
+online_optimizers: Dict[str, torch.optim.Adam] = {
+    name: torch.optim.Adam(gnn_router.policy_models[name].parameters(), lr=1e-4)
+    for name in gnn_router.policy_names
+}
+
+# ... 在主循环中的在线微调逻辑 ...
+for pname, buf in online_buffers.items():
+    if len(buf) >= online_batch and pname in gnn_router.policy_models:
+        batch = [buf.pop() for _ in range(online_batch)]
+        model = gnn_router.policy_models[pname]
+        model.train()
+        optim = online_optimizers[pname]
+        optim.zero_grad()
+        
+        # 获取路径（原始路口 ID）
+        paths = [b["path"] for b in batch]
+        if not paths or not paths[0]:
+            model.eval()
+            continue
+        
+        # 转换为图节点索引
+        paths_idx = []
+        for p in paths:
+            try:
+                paths_idx.append([gnn_router.converter.get_idx(node) for node in p])
+            except Exception:
+                paths_idx.append([])
+        
+        # 聚合路径特征
+        _, edge_feat, scalar_feat = gnn_router.compute_path_features(paths, max_hops=MAX_HOPS)
+        if edge_feat is None or scalar_feat is None:
+            model.eval()
+            continue
+        
+        # src/dst 索引
+        src_idx = gnn_router.converter.get_idx(paths[0][0])
+        dst_idx = gnn_router.converter.get_idx(paths[0][-1])
+        
+        # 计算奖励
+        rewards = []
+        for b in batch:
+            succ = float(b["success"])
+            ad = b["ADsd"]
+            hc = b["HCsd"]
+            rc = b["RCsd"]
+            wp, wa, wb, wg = DEFAULT_POLICY_WEIGHTS.get(pname, (0.5, 0.2, 0.2, 0.1))
+            # 正确的奖励计算
+            mADsd = max(ad, 10.0)  # 路径延迟上界估计
+            rad = max(0.0, min(1.0, 1.0 - ad / max(mADsd, 1e-6)))
+            rrc = 1.0 / (1.0 + rc)
+            rhc = math.exp(-hc / 10.0)
+            rew = wp * succ + wa * rad + wb * rhc + wg * rrc
+            rewards.append(rew)
+        
+        rewards_t = torch.tensor(rewards, device=gnn_router.device, dtype=torch.float)
+        
+        # 前向传播（需要梯度）
+        node_embs = model.get_embeddings(
+            gnn_router.graph.x.to(gnn_router.device),
+            gnn_router.graph.edge_index.to(gnn_router.device),
+            gnn_router.graph.edge_attr.to(gnn_router.device) if gnn_router.graph.edge_attr is not None else None,
+        )
+        q_pred = model.forward_policy(
+            pname, node_embs, src_idx, dst_idx, paths_idx,
+            edge_feat.to(gnn_router.device),
+            scalar_feat.to(gnn_router.device)
+        )
+        
+        if q_pred.numel() == 0:
+            model.eval()
+            continue
+        
+        # 损失计算（取第一个路径的 Q 值，因为 batch 中每个样本只有一条实际执行的路径）
+        loss = torch.nn.functional.mse_loss(q_pred[:len(rewards)], rewards_t)
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_(model.parameters(), 5.0)
+        optim.step()
+        model.eval()
+        dlog(f"[ONLINE] {pname} batch={len(batch)} loss={loss.item():.4f}")
+```
+
+---
+
+## 📊 总结
+
+| 问题 | 严重程度 | 状态 |
+|------|----------|------|
+| `forward_policy` 参数错误 | 🔴 严重 | 需修复 |
+| `src_idx/dst_idx` 提取错误 | 🔴 严重 | 需修复 |
+| 奖励公式分母错误 | 🟡 中等 | 需修复 |
+| 每次创建新优化器 | 🟡 中等 | 需修复 |
+| 路径索引转换 | 🟡 中等 | 需修复 |
+
+在线微调的思路是对的，但实现细节需要修正。修复后，您的系统就能真正利用 NS-3 的真实反馈来在线改进模型了！

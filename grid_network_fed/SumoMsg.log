@@ -1,0 +1,7 @@
+***Starting server on port 3400 ***
+Loading net-file from '/home/Lyh/VaN3Twin/ns-3-dev/src/automotive/examples/grid_network_large/grid_network_fed/grid.net.xml' ... done (112ms).
+Loading additional-files from '/home/Lyh/VaN3Twin/ns-3-dev/src/automotive/examples/grid_network_large/grid_network_fed/stations.xml' ...
+ done (22712ms).
+Loading route-files incrementally from '/home/Lyh/VaN3Twin/ns-3-dev/src/automotive/examples/grid_network_large/grid_network_fed/grid.rou.xml'
+Loading done.
+Simulation version 1.23.1 started with time: 0.00.

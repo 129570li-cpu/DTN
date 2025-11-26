@@ -1,0 +1,2115 @@
+ELITE: An Intelligent Digital Twin-Based
+Hierarchical Routing Scheme for Softwarized
+Vehicular Networks
+Liang Zhao
+, Member, IEEE, Zhenguo Bi
+, Ammar Hawbani
+, Keping Yu
+, Member, IEEE,
+Yan Zhang, Fellow, IEEE, and Mohsen Guizani
+, Fellow, IEEE
+Abstract—Software-Deﬁned Vehicular Network (SDVN) is a networking architecture that can provide centralized control for vehicular
+networks. However, the design for routing policies in SDVNs is generally inﬂuenced by several limitations, such as frequent topological
+changes, complex service requests, and long model training time. Intelligent Digital Twin-based Software-Deﬁned Vehicular Networks
+(IDT-SDVN) can overcome these weaknesses and maximize the advantages of the conventional SDVN architecture by enabling the
+controller to construct virtual network spaces and provide virtual instances of corresponding physical objects within the Digital Twin (DT).
+In this paper, we propose a junction-based hierarchical routing scheme in IDT-SDVN, namely, intelligent digital twin hierarchical (ELITE)
+routing. The proposed scheme is conducted in four phases: policy training and generation in the virtual network, and deployment and
+relay selection in physical networks. First, the policy learning phase employs several parallel agents in DT networks and derives multiple
+single-target policies. Second, the generation phase combines the learned policies and generates new policies based on complex
+communication requirements. Third, the deployment phase selects the most suitable generated policy according to the real-time network
+status and message types. A road path is calculated by the controller based on the selected policy and then sent to the requester vehicle.
+Finally, the relay selection phase is utilized to determine relay vehicles in a hop-by-hop process along the selected path. Simulation
+results demonstrate that ELITE achieves substantial improvements in terms of packet delivery ratio, end-to-end delay, and
+communication overhead compared with its counterparts.
+Index Terms—Fuzzy logic, hierarchical routing, intelligent digital twin networks, reinforcement learning, software-deﬁned vehicular networks
+Ç
+1
+INTRODUCTION
+W
+IRELESS connectivity empowers vehicles participating
+in data exchange and promotes the establishment of
+Vehicular Networks (VNs) in vehicular environments [1].
+In VNs, vehicles are enabled to perceive the environment
+outside the visible range via vehicle-to-vehicle communica-
+tion, which can improve driving safely, enhance trafﬁc
+efﬁciency, provide information services, and support auton-
+omous driving [2], [3]. In general, all these applications
+depend on stable and efﬁcient information sharing among
+vehicles. Nevertheless, limited by the transmission capacity
+of vehicles, successful data transmission requires relay
+vehicles to forward packets to the destination vehicle in a
+hop-by-hop process. Since the link quality between adjacent
+vehicles substantially inﬂuences communication perfor-
+mance, designing the right next-hop vehicle selection
+scheme is vital to improve the overall network quality of
+multi-hop networking, in terms of delivery ratio, latency,
+and load balancing [4], [5], [6].
+Among all characteristics of modern
+transportation,
+dynamic vehicle movement and uneven distribution are the
+main reasons for intermittent connectivity, thus becoming the
+key challenges for relay selection in multi-hop networking.
+Software-Deﬁned Vehicular Network (SDVN) is a network-
+ing paradigm to overcome these weaknesses by enabling the
+global information available [7], [8]. The central controller of
+SDVN has the ability to calculate the optimal routes from
+sources to destinations online based on spatiotemporal infor-
+mation, thereby microscopically ensuring reliable links and
+macroscopically avoiding local optima and data conges-
+tion [9], [10]. However, in large-scale VNs, calculating routing
+paths entirely in the controller may occupy massive up-down
+link bandwidth and computational resources. Moreover, the
+
+Liang Zhao and Zhenguo Bi are with the School of Computer Science, She-
+nyang Aerospace University, Shenyang 110136, China.
+E-mail: lzhao@sau.edu.cn, tfxp294@163.com.
+
+Ammar Hawbani is with the University of Science and Technology of
+China, Hefei, Anhui 230052, China. E-mail: anmande@ustc.edu.cn.
+
+Keping Yu is with the Graduate School of Science and Engineering, Hosei
+University, Chiyoda, Tokyo 184-8584, Japan, and also with the RIKEN
+Center for Advanced Intelligence Project, RIKEN, Chuo, Tokyo 103-0027,
+Japan. E-mail: keping.yu@ieee.org.
+
+Yan Zhang is with the University of Oslo, 0315 Oslo, Norway.
+E-mail: yanzhang@iﬁ.uio.no.
+
+Mohsen Guizani is with Machine Learning Department, Mohamed Bin
+Zayed University of Artiﬁcial Intelligence (MBZUAI), Abu Dhabi 51133,
+UAE. E-mail: mguizani@ieee.org.
+Manuscript received 12 Nov. 2021; revised 26 Apr. 2022; accepted 24 May 2022.
+Date of publication 31 May 2022; date of current version 4 Aug. 2023.
+This work was supported in part by the funds of Department of Science and
+Technology of Liaoning Province, in part by the Science Foundation of Liaon-
+ing Province under Grant 2020-MS-237, in part by the Liaoning Provincial
+Department of Education Science Foundation under Grant JYT19052, in part
+by the Digit Fujian Internet-of-Things Laboratory of Environmental Monitor-
+ing Research Fund (Fujian Normal University) under Grant 202001, in part
+by the National Natural Science Foundation of China under Grant 61872086,
+and in part by the Science Foundation of Liaoning Province (Key Projects).
+(Corresponding authors: Zhenguo Bi and Ammar Hawbani.)
+Digital Object Identiﬁer no. 10.1109/TMC.2022.3179254
+IEEE TRANSACTIONS ON MOBILE COMPUTING, VOL. 22, NO. 9, SEPTEMBER 2023
+5231
+1536-1233 © 2022 IEEE. Personal use is permitted, but republication/redistribution requires IEEE permission.
+See ht_tps://www.ieee.org/publications/rights/index.html for more information.
+Authorized licensed use limited to: University of Minnesota. Downloaded on September 14,2025 at 04:52:44 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+preselected routing paths may contain broken links due to
+rapid vehicular mobility.
+As vehicle distribution is subject to road topology, the
+presence of buildings and obstacles may decrease the signal
+intensity, especially in urban settings with numerous road-
+side buildings. By taking road topology into consideration,
+road-based routing can evaluate road status and reduce the
+risk of packets entering a segment with high-scale link dis-
+connections [11], [12], [13], [14]. Based on the global knowl-
+edge of the road network, the central controller can ﬁnd the
+routing path from the perspective of the road or junction
+within a limited time period. After that, relay vehicles can
+select the next hop along the planned path accordingly. In
+road-based hierarchical routing, the routing path is not
+deﬁned as a complete path that consists of relay vehicles
+from the source to the destination, but rather, as a junction
+sequence from the start junction to the target junction.
+In recent years, research efforts have focused on routing
+scheme designs for both distributed and centralized rout-
+ing. Nevertheless, optimizing models online and validating
+them before application to adapt to changing trafﬁc scenar-
+ios and communication requirements is still challeng-
+ing [15]. A promising way to overcome this challenge is by
+opening up a speciﬁed space for preliminary model training
+and processing. As a potential cure, Digital Twin (DT) [16]
+can be utilized to create multi-scale digital mappings to tar-
+get entities. Recent trends in the combination of autono-
+mous driving and DT have led to a proliferation of studies
+that driving assistance [17], [18], [19], vehicular edge com-
+puting [20], [21], and trafﬁc management [22], [23]. A typical
+application of DT in vehicular networks is proposed in [24],
+which introduces a new networking architecture, named
+Intelligent Digital Twin-based Software-Deﬁned Vehicular
+Networks (IDT-SDVN). It constructs multiple virtual Digital
+Twin Networks (DTNs) to provide distinct functions for the
+real-world SDVN, such as prediction, model training, and
+veriﬁcation. Based on the DTN space, it is promising to
+yield reliable schemes to meet the above considerations and
+improve the performance of the whole vehicular network.
+The main motivations of this paper are summarized as
+follows.
+(1) Due to a lack of knowledge about future trafﬁc situa-
+tions when training a model, conventional pre-trained
+model-based routing policies suffer from low adaptability
+and insensitivity to the dynamics of network status. IDT-
+SDVN can handle the dynamic topology changing of
+vehicles better over SDVN and VN due to its virtualization
+and prediction abilities.
+(2) Existing routing models generally pay attention to
+trafﬁc-related
+or
+topological
+factors
+(inter-vehicle
+dis-
+tance [25], relative velocity [26], density [27], etc.). However,
+the inﬂuence of these factors on the performance in certain
+routing metrics such as packet loss rate and end-to-end
+delay is still ambiguous. Thus, directly quantifying and uti-
+lizing routing metrics while training models is a more feasi-
+ble solution.
+(3) There are various types of messages with different
+transmission requirements in VNs. For example, collision
+avoidance messages are time-constraint, while multimedia
+messages are delay-tolerant, which might occupy massive
+bandwidth. However, few studies have been investigated in
+terms of adaptively deploying routing policies towards
+complex message types to provide personalized services.
+To mitigate the aforementioned problems, we propose a
+junction-based hierarchical routing scheme in IDT-SDVN,
+known as intelligent digital twin hierarchical (ELITE) rout-
+ing, which involves two aspects in system modeling. First,
+we train a group of multidimensional routing tables (poli-
+cies) by parallel learning in DTNs and experience fusion.
+The table value indicates the tendency of a packet to be for-
+warded to each junction for a certain transmission require-
+ment. Second, as these policies are generated aiming to
+meet diverse communication requirements, the controller
+maintains a state-action table that records the best policy
+choice for each combination of (network situation, message
+type). Once receiving a routing request, the controller deter-
+mines which policy is the best choice for this transmission
+and deploys it. Data packets are forwarded along the path
+calculated based on the deployed policy. All the efforts
+made in this paper are focused on providing the most reli-
+able multi-hop data transmission by jointly considering var-
+ious routing metrics and communication types. The main
+contributions of this paper are summarized as follows.
+(1) In IDT-SDVN, a new routing scheme, ELITE, is intro-
+duced with the advantages of (i) realizing adaptive routing
+policy generation for various communication requirements
+in VNs, and (ii) intelligently switching policies regarding
+the instant network status and message types.
+(2) We propose a routing policy generation approach
+with parallel learning and experience fusion. In the learning
+process, we develop a DTN space and deploy a group of
+virtual agents in it to learn multiple single-target policies. In
+addition, the fusion process is responsible for combining
+these learning results and generating available policies for
+various service requirements. This approach allows auto-
+matic routing policy generation.
+(3) We introduce a policy application mechanism that
+includes policy selection and road path planning in the
+IDT-SDVN controller, and road-based relay vehicle selec-
+tion in distributed vehicular networks. By adopting this
+mechanism, the controller can reduce the impact of frequent
+topological changes in vehicular networks and decrease the
+time consumption in policy switching. Simulation results
+show that the proposed mechanism brings great perfor-
+mance in packet delivery ratio, average end-to-end delay,
+etc.
+The rest of this paper is organized as follows. In Section 2,
+we discuss the state-of-the-arts and related works. Section 3
+introduces a new IDT-SDVN-based routing policy genera-
+tion scheme and outlines the system model. In Section 4, we
+describe the proposed scheme in detail. Section 5 gives the
+simulation scenario and evaluation results. Finally, in Sec-
+tion 6, we summarize the proposed scheme and end the
+paper by discussing future works.
+2
+RELATED WORK
+In this section, we discuss and summarize the existing rout-
+ing schemes in varying scenarios (i.e., distributed and cen-
+tralized) as well as using different technologies (i.e., fuzzy
+logic and reinforcement learning). Besides, we also intro-
+duce some common experience fusion methods.
+5232
+IEEE TRANSACTIONS ON MOBILE COMPUTING, VOL. 22, NO. 9, SEPTEMBER 2023
+Authorized licensed use limited to: University of Minnesota. Downloaded on September 14,2025 at 04:52:44 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+(1) Existing Routing Schemes in Vehicular Ad hoc Network
+(VANET). VANET plays an important role in Intelligent
+Transportation Systems (ITS). Routing decisions in VANETs
+are made by distributed vehicles according to the tempo-
+rary information within one hop. On-road vehicles dynami-
+cally share/exchange basic information (e.g., position and
+velocity) with neighbors through periodic beacons. During
+packet propagation, intermediate vehicles select the next
+forwarder based on applied schemes without any addi-
+tional information. Thus, this type of routing solution
+always accompanies potential risks of limited available and
+outdated data separately caused by perception ability and
+high mobility, thereby leading to link disconnection, data
+congestion, and local optimization.
+A few contributions have been made in link evalua-
+tion [28], vehicular dynamic prediction [29], and bus trajec-
+tory utilization [30] to meet various demands of Quality of
+Service (QoS) in VANETs. The scheme in [28] aims to iden-
+tify routing paths based on ﬁve metrics such as link capacity
+and connectivity. It uses the Strength Pareto Evolutionary
+Algorithm to optimize these metrics and proposes a path-
+ﬁnding algorithm for data routing. A Broadcast scheme
+based on the Prediction of Dynamics (BPD) [29] is proposed
+which conducts two novel metrics separately targeted to
+broadcast delay and dissemination efﬁciency. In [30], the
+Bus Trajectory-based Street Centric (BTSC) routing scheme
+utilizes buses as the main relay to deliver packets. It consid-
+ers both bus trajectory and packet delivery between two
+buses to increase the transmission ratio and decrease delay.
+(2) Existing Routing Schemes in Software-Deﬁned Vehicular
+Networks (SDVNs). Beneﬁted from splitting networking con-
+trol from data forwarding services, SDVN controllers are
+enabled for global information gathering, network resource
+management, and centralized routing decision. Based on
+these characteristics, in SDVNs, a lot of efforts have been
+made in strategy design for load balancing, low latency con-
+trol, security, etc. However, routing of SDVNs always faces
+the problems, including computation consumption, fre-
+quent bandwidth occupation, and relatively long delay.
+The majority of existing schemes in SDVN are based on
+centralized link evaluation. In such schemes [25], [31], [32],
+global network information are utilized in path scheduling
+with the great advantages against classical distributed rout-
+ing. The scheme proposed consists of both centralized and
+distributed routing methods in SDVN [33]. The authors for-
+mulates multi-hop data delivery in uncertain vehicular net-
+work conditions as a minimum cost capacitated ﬂow problem
+with the constraints of routing, timing, and capacity. By ﬁnd-
+ing the optimal solution, a feasible path for forwarding pack-
+ets is outputted. In [10], four different strategies are proposed
+for different transmission demands on various metrics. The
+SDN controller is responsible for global routing scheduling
+by evaluating the encounter probability between buses.
+(3) Fuzzy Logic-based Routing in VNs. Fuzzy Logic
+empowers agents to process uncertain classiﬁcation and
+decision-making problems by imitating the human brain. In
+VNs, through the concept of fuzzy logic, the vague relation-
+ship between trafﬁc features and routing performance on
+various metrics can be well explained. Thus, a few routing
+schemes have been proposed by adopting fuzzy modeling
+and processing, to realize several functions such as hop-by-
+hop link evaluation and relay selection in VANETs or
+SDVNs.
+Vehicular Environment Fuzzy Router (VEFR) [27] uses a
+fuzzy logic system to evaluate links from the perspectives
+of roads and vehicles. Road segments with high density and
+vehicles with similar speeds are selected for packet delivery.
+Fuzzy Logic-based Directional Greedy Forwarding (FL-
+DGR) [34] ﬁnds a trade-off among various metrics (e.g.,
+position, link quality, and throughput) while next-hop node
+selection. In [35], Intersection Routing based on Fuzzy
+Multi-Factor Decision (IRFMFD) is proposed by integrating
+multiple features for geographic routing. It selects static
+nodes at intersections and builds multi-hop links between
+two static nodes by fuzzy logic based on factors like dis-
+tance and relative velocity. However, the frequent usage of
+fuzzy inference must lead to excessive computational con-
+sumption, thereby decreasing the network efﬁciency.
+(4) Reinforcement Learning-based Routing in VNs. In Rein-
+forcement Learning (RL)-based routing schemes, the entire
+VN is treated as the environment, agents are the on-road
+vehicles, SDVN controller, or virtual agents ﬂowing among
+vehicles. Reward/experience accumulation originates from
+real data routing or network awareness. One of the greatest
+advantages of RL-based routing is that agents have no need
+to achieve prior knowledge of the environment. Existing
+studies demonstrate that RL-based routing well adapts to
+high dynamic VNs because of its ability to react to transient
+changes in network situations.
+QGrid [36], designed as a RL-based hierarchical routing
+scheme, is proposed by considering grid connectivity and
+vehicular movement. It divides the whole map into many
+small grids and uses Q-learning to ﬁnd the transmission
+propriety between every two adjacent grids through period-
+ical exploration of the environment. During routing, packets
+are delivered hop-by-hop along the grid sequence calcu-
+lated by the learned Q-table. In [14], rewards and discount
+factors are determined according to routing situation and
+historical trafﬁc ﬂow. The authors propose a RL-based
+multi-hop route evaluation method [37]. As the vehicles
+exchanging hello messages, a table is learned as recording
+values for selecting next-hop vehicles for Road-Side Units
+(RSUs). However, the convergence of RL algorithms relies
+on extensive exploration of the environment, online training
+must lead to substantial bandwidth occupation and even
+failure routes.
+(5) Experience Fusion Methods. Data fusion has been
+widely used in the ﬁelds of target recognition and detection.
+Based on certain rules, fusion mechanisms can analyze and
+integrate data from multiple different sensors or agents,
+and further provide more reasonable evaluation and deci-
+sion. Fused data can reﬂect the information from each data
+source, as well as the information that cannot be provided
+by a single source. Common data fusion methods include
+voting, Kalman ﬁlter, Bayesian method, and fuzzy logic.
+Many studies tend to implement multi-sensor data fusion
+to improve data reliability and integrity in wireless sensor
+networks. In [38], the optimal fusion rule selection problem
+of distributed decision fusion in wireless sensor networks is
+discussed. It uses the likelihood ratio test under the Ney-
+man-Pearson sense to derive the optimal fusion rule and
+applies the fusion process to produce the global decision.
+ZHAO ET AL.: ELITE: AN INTELLIGENT DIGITAL TWIN-BASED HIERARCHICAL ROUTING SCHEME FOR SOFTWARIZED VEHICULAR...
+5233
+Authorized licensed use limited to: University of Minnesota. Downloaded on September 14,2025 at 04:52:44 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+Efforts in [39] aim to develop a real-time road condition sys-
+tem that strictly relies on comprehensive and accurate data. It
+designs a three-layer Back Propagation structure for the
+fusion of ﬂoating car data and ﬁxed detector data to improve
+the accuracy of trafﬁc speed estimation. A ﬁne-grained trafﬁc
+ﬂow prediction method [40] is proposed to forecast the ﬂow
+of different types of vehicles. By fusing multi-source trafﬁc
+data, such as vehicle detector data, remote microwave sensors
+data, and toll collection data, vehicle types are well identiﬁed.
+Compared with other fusion methods, through fuzzy
+fusion, data with uncertain concepts or vague descriptions
+from different sources can be properly combined into single-
+valued evaluation indicators. In RL-based vehicular net-
+works, considering the differences in learning rates among
+agents, experience accumulation is incomplete and time-
+varying. Therefore, it is promising to apply the fuzzy system
+to multi-agent experience fusion as the relationship among
+learned policies can be well expressed and distinguished.
+(6) Summary. Through the previous studies, we conclude
+that (i) the global view and computational power of SDVN
+can provide additional functions that distributed systems
+are not capable of, and also facilitate the realization of DT in
+VNs. (ii) DTNs provide platforms for verifying functions
+that are risky or hard to execute in physical worlds. Some
+key challenges of existing schemes, that is, membership
+function settings in FLR and sparse reward in RLR, have
+the potential to be optimized through IDT-SDVN with low
+cost. Beneﬁted from the characteristics such as parallel with
+physical networks and strong spatiotemporal scalability,
+IDT-SDVN can provide multiple virtual twin networks that
+cover past, present, and future, thereby realizing intelligent
+routing optimization in VNs.
+3
+SYSTEM OVERVIEW
+In this paper, considering the real-time demand of making
+routing decisions and the difference in the transmission
+requirement of various types of messages in vehicular net-
+works, by utilizing the advantages of the DT concept, we
+propose ELITE with the target to realize stable and efﬁcient
+inter-vehicle communication in the IDT-SDVN. Before
+detailed introducing ELITE, in this section, we describe the
+basic preliminaries in three parts. First, we discuss the road-
+based hierarchical routing structure. Our proposed ELITE is
+implemented under this structure and mainly targets the
+ﬁrst level, that is, road path planning for packet transmis-
+sion. Then, a comprehensive outline of ELITE is given.
+Finally, we show the routing table mentioned in ELITE.
+3.1
+Routing Structure
+In this paper, we adopt a road-based hierarchical routing
+structure for IDT-SDVN. Compared with other centralized
+and location-based structures, it has advantages including,
+(1) decreasing computation time and resource consumption,
+and (2) reducing the impact of roadside buildings on signal
+strength. Moreover, by utilizing DT, SDVN is empowered
+with various functions, including online routing policy
+learning, testing, veriﬁcation, and optimization.
+As presented in the left of Fig. 1, the hierarchical routing
+structure of IDT-SDVN is expressed in ﬁve steps. First, the
+source node sends request messages to the IDT-SDVN con-
+troller before packet transmission. Second, a routing path is
+calculated by the IDT-SDVN controller and sent to the
+requester. Note that the path here denotes a junction
+sequence. Then, packets are forwarded along the path hop-
+by-hop based on the relay node selection strategy which
+will be described later. Finally, the packet receiver reports
+the essential routing information, such as round delay and
+hop count, to the controller for further policy optimization.
+The right of Fig. 1 illustrates how IDT-SDVN operates to
+optimize routing in the physical world. As shown, the
+SDVN controller develops a virtual presentation of the
+physical space based on the digital map and collected trafﬁc
+data. The DT side runs in parallel with the physical vehicu-
+lar network. IDT-SDVN provides multiple services for VNs
+as described at the top of Fig. 1, including (1) policy veriﬁca-
+tion or new policy learning; (2) multi-DT collaborative opti-
+mization; (3) generating a reliable routing decision model or
+path scheduling strategy.
+3.2
+Routing Scheme Outline
+Under the hierarchical routing structure, determining road
+paths with efﬁcient and stable packet transmission ability is
+a crucial point. In this paper, we focus on the policy design-
+ing of road paths planning (also known as intermediate
+junctions selection) and propose a road-level routing policy
+generation and application scheme, ELITE. As shown in
+Fig. 2, our proposed ELITE consists of three processes, Sin-
+gle-target Policy Learning (SPL), Experience Fusion and
+new policy Generation (EFG), and Application in Physical
+Networks (APN).
+In SPL, we set up multiple DTNs by duplicating the
+physical vehicular network, and correspondingly deploy
+virtual agents to them. Each agent acts as the data center of
+a DTN and imitates real inter-vehicle communication
+together with it. All DTN-agent pairs operate in parallel to
+learn policies that can maximize the performance for one
+Fig. 1. The structure of hierarchical routing in IDT-SDVN.
+5234
+IEEE TRANSACTIONS ON MOBILE COMPUTING, VOL. 22, NO. 9, SEPTEMBER 2023
+Authorized licensed use limited to: University of Minnesota. Downloaded on September 14,2025 at 04:52:44 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+metric (e.g., delivery ratio, end-to-end delay, and hop
+counts).
+EFG provides a fusion mechanism which includes two
+parts: weight-based fusion and fuzzy logic-based fusion.
+The inputs are single-target policies obtained in SPL, while
+the outputs are new policies that satisfy various service
+requirements (e.g., high reachability-ﬁrst and low delay-
+ﬁrst). In this case, EFG can infer more policies by providing
+more fusion rules, ensuring comprehensive and ﬂexible
+routing support.
+In APN, we design an adaptive routing policy deploy-
+ment mechanism by employing the Q-learning algorithm.
+The controller learns from real vehicular communication
+and maintains a state-action table that records the priority
+of the generated policies under various network load situa-
+tions and message types. Besides, a road-based relay vehicle
+selection strategy is proposed. Adopting this scheme is ben-
+eﬁcial because it can intelligently select and apply the opti-
+mal policy in response to the instantaneous information
+from physical networks.
+3.3
+Routing Table
+As illustrated above, in this paper, the proposed routing
+scheme is policy-based, and policies are presented in the
+form of a routing table set that contains n routing tables T ¼
+fT 1; T 2; . . . ; T ng. A routing table, that is, a policy in this
+paper, is organized as a three-dimensional matrix T x ¼
+fT1; T2; . . . ; Tmg, where m is the number of junctions in the
+physical network. Ti is formulated in Eq. (1), where each
+entry Ti : tj;k indicates the priority of the current junction Ji
+forwarding packets to its adjacent junction Jk, with the tar-
+get junction being Jj. q is the number of adjacent junctions
+of Ji
+Ti ¼
+t1;1
+  
+t1;q
+..
+.
+..
+.
+..
+.
+tm;1
+  
+tm;q
+2
+64
+3
+75
+(1)
+There are three types of table sets, all of which are orga-
+nized as T. More details are as follows.
+(1) Q ¼ fQPRR; QAD; QHC; QRCg denotes the single-target
+policy set learned by n parallel agents in DTNs. An entry
+Qxði; j; kÞ corresponds to T x : Ti : tj;k.
+(2) Qnorm ¼ fQnorm
+PRR ; Qnorm
+AD ; Qnorm
+HC ; Qnorm
+RC g denotes the nor-
+malized policy set which originates from Q. Qnorm
+x
+ði; j; kÞ
+corresponds to T x : Ti : tj;k.
+(3) G ¼ fGbas; GHRF; GLDF; GLBFg denotes the policy set
+that will be deployed to physical networks. Gxði; j; kÞ corre-
+sponds to T x : Ti : tj;k.
+A detailed description of all notations used in this paper
+is presented in Table 1.
+4
+PROPOSED ELITE ROUTING SCHEME IN
+IDT-SDVN
+ELITE is proposed by the following three processes. First,
+we employ the Parallel Reinforcement Learning method in
+DTNs to learn multiple single-target routing policies. Then,
+two fusion techniques are introduced to combine those
+learning results and further derive new policies toward
+diverse message types. Finally, we apply the DTN-gener-
+ated policies in the physical side of IDT-SDVN.
+4.1
+Single-Target Policy Learning
+This section mainly discusses the PRL-based single-target
+policy learning approach. In the following subsections, we
+Fig. 2. The proposed ELITE routing scheme in IDT-SDVN. (a) The single-target policy learning process in DTNs. (b) The experience fusion mecha-
+nism which includes two ways: wight-based fusion and fuzzy logic-based fusion. Multiple available policies, presented as a routing table set, is gener-
+ated after steps (a) and (b). (c) The policy application mechanism that aims to deploy the optimal one among all generated policies to the physical
+side of IDT-SDVN.
+TABLE 1
+Notations
+Notation
+Description
+J
+J ¼ fJ1; . . . ; Jmg.
+Ji is a junction in the map, with the identiﬁcation i.
+Ni is the set of J’s adjacent junctions, q ¼ lenðNiÞ.
+T
+Q, Qnorm, and G are all organized in the form of T,
+Q is the single-target policy set learned by DTNs,
+Qnorm is the normalized single-target policy set,
+G contains policies that will be deployed.
+Rði; j; kÞ
+One-step reward from Ji to Jj via Jk 2 Ni.
+Li;j
+A junction sequence between Ji and Jj.
+Generally obtained by querying policies in Q or G.
+ui;j
+A vector in Qx that bound by Ji and Jj.
+ui;j ¼ ðQxði; j; pÞÞ; 8Jp 2 Ni.
+vi;j;k
+A vector that contains all values in Q with the same
+constraint Ji  Jj  Jk.
+vi;j;k ¼ ðQnorm
+l
+ði; j; kÞÞ; 8Qnorm
+l
+2 Qnorm
+Vi
+A vehicle with the identiﬁcation number i.
+ZHAO ET AL.: ELITE: AN INTELLIGENT DIGITAL TWIN-BASED HIERARCHICAL ROUTING SCHEME FOR SOFTWARIZED VEHICULAR...
+5235
+Authorized licensed use limited to: University of Minnesota. Downloaded on September 14,2025 at 04:52:44 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+ﬁrst introduce the parallel learning objectives and then illus-
+trate the SPL approach and its implementation in agent-
+DTN pairs in detail.
+4.1.1
+Routing Metric
+In the DTN space, each virtual agent is assigned a speciﬁed
+learning objective, namely obtaining the optimal perfor-
+mance of one essential routing metric for vehicular commu-
+nication by interacting with its corresponding DTN. The
+following metrics are taken into consideration:
+(1) Packet Delivery Ratio (PDR). This metric is deﬁned as
+the ratio of the number of successfully received packets to
+the total number of generated packets in a certain period.
+(2) Average Delay (AD). It represents the average interval
+between data generation and reception, including the time
+caused by inter-vehicle transmission and packet-carrying at
+relay vehicles.
+(3) Hop Count (HC). It is considered a basic measurement
+of the distance in vehicular networks, obtained by accumu-
+lating the number of hops during successful packet delivery.
+(4) Routing Cost (RC). This metric is expressed as the
+number of control messages (e.g., beacon messages, and dis-
+covery and report messages) required between the genera-
+tion and reception of a packet.
+4.1.2
+Parallel Learning in Digital Twin Networks
+Here, we introduce three aspects of the SPL approach. Paral-
+lel learning structure demonstrates how to develop a learning
+space in the IDT-SDVN controller. Virtual vehicular commu-
+nication describes the way of realizing routing decisions in
+DTNs. Experience accumulation provides the policy mainte-
+nance and update approach.
+(1) Parallel learning structure. The ﬁrst thing to be noted in
+parallel learning is DT, which is responsible for providing
+an internal virtual representation of the physical vehicular
+network in the IDT-SDVN controller. In practice, we assume
+that the central controller can set up a group of DTNs that (i)
+entirely emulate real road network topology, including
+junctions, roadside buildings, weather and so forth; and (ii)
+contain trafﬁc ﬂow information within a certain future
+period obtained by accurate prediction algorithms.
+Based on the developed DTN space, we deploy a group
+of virtual agents on it to construct the parallel learning
+structure (as shown in Fig. 3), a DTN provides a virtual
+vehicular communication environment and an agent works
+as the data center on it. There are four pairs of DTN-agents
+developed in this paper, labeled PDR, AD, HC, and RC.
+All DTN-agent pairs work in parallel. Each DTN-agent pair
+targets a certain performance objective, that is, pursuing the
+best performance of a single metric by imitating virtual data
+transmission and centralized routing decisions. Agents
+keep accumulating routing experience and record them in
+the form of a policy. The policy learning process can be
+treated as a parallel implementation of the Q-learning algo-
+rithm in digital networks.
+We take junctions and connected roads as states and
+actions of Q-learning, respectively. Because two adjacent
+junctions are connected by at least one road, in this paper,
+actions can also be explained as the adjacent junctions of the
+current junction. In this case, the Q-table maintained by
+virtual agents is deﬁned as a three-dimensional matrix
+whose set is denoted by Q ¼ fQPDR; QAD; QHC; QRCg.
+(2) Virtual vehicular communication. As shown in Fig. 3,
+once virtual agent VA_x receives a request message from
+its corresponding DT network DTN_x, it ﬁrst executes the
+junction selection algorithm, which consists of two steps:
+(i) a Case Selection procedure that determines the junc-
+tion selection mode, and (ii) a Path Calculation procedure
+that
+selects
+intermediate
+junctions
+according
+to
+the
+assigned mode. The junction selection algorithm in paral-
+lel learners takes as inputs the source junction Js and the
+destination junction Jd, as illustrated in Algorithm 1. It
+starts at Js and aims to construct a road path from Js to
+Jd. There are three cases mentioned while selecting the
+next junction:
+Algorithm 1. Junction Selection in Parallel Learners
+Input: Source junction Js and destination junction Jd
+Output: Junction list Lsd
+1: Set c  1 # the current junction
+2: Set Lsd  ½  # a list of junctions
+3: Randomly select three cases by the probability of 50%, 20%,
+and 30%
+4: while Jd =2 Lcn do
+5:
+if Case1 then
+6:
+# exploitation mode
+7:
+r  maxQðc; d; nÞ; 8Jn 2 Nc
+8:
+else if Case2 then
+9:
+# greedy mode
+10:
+Get the distance between c and 8Jn 2 Nc
+11:
+r  the adjacent junction closest to Jd
+12:
+else
+13:
+# exploration mode
+14:
+r  a random neighbor of c
+15:
+end if
+16:
+c  r
+17:
+Add c into Lsd
+18: end while
+19: return Lsd
+Case 1, Exploitation mode. In this mode, the agent queries
+its maintained routing table and chooses the next junction Jr
+based on the optimal policy, which is described in Lines 5-
+7 in Algorithm 1 correspondingly. Jc is the current junction
+and Nc indicates the set of its adjacent junctions.
+Case 2, Greedy mode. In this mode, the agent calculates the
+junction sequence entirely based on location information.
+Each junction that appears in the path is the geographically
+Fig. 3. The structure of single-target policy learning in parallel IDT-agent
+pairs.
+5236
+IEEE TRANSACTIONS ON MOBILE COMPUTING, VOL. 22, NO. 9, SEPTEMBER 2023
+Authorized licensed use limited to: University of Minnesota. Downloaded on September 14,2025 at 04:52:44 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+optimal choice (i.e., closest to the target junction) of its previ-
+ous junction, as shown in Lines 8-11 in Algorithm 1.
+Case 3, Exploration mode. In this mode, the agent ran-
+domly selects intermediate junctions from the source junc-
+tion to the target junction,as expressed in Lines 12-14 in
+Algorithm 1. Beneﬁted from exploration, the experience of
+state-action pairs that are non-optimal will also be accumu-
+lated, and ﬁnally utilized in the fusion process.
+Once Jd is achieved, the path planning process ends and
+returns Lsd, which records the junction sequence from Js to
+Jd. After that, the virtual agent sends a response back to the
+corresponding DTN. Subsequently, packets are forwarded
+hop by hop based on the road-based greedy routing strat-
+egy described in Section 4.3.2 (2) toward the destination
+vehicle along the received path.
+(3) Experience accumulation. The foremost part of this par-
+allel learning process is routing table maintenance. As a
+road sequence only brings two results: data reception or
+loss, the agents are responsible for accumulating successful
+experience and, if necessary, weakening the path that leads
+to packet loss. Once data transmission is complete in a
+DTN, the virtual agent updates its maintained routing table
+by
+Qðc; d; aÞ þ¼ a½R þ gðmax
+h
+Qða; d; hÞ  Qðc; d; aÞÞ;
+(2)
+where c, d, and a represent the current junction, the target
+junction, and the next junction, respectively. a is the learn-
+ing rate, set to 0.9, and g is the discount factor, set to 0.1.
+maxh Qða; d; hÞ denotes the maximal expected reward. For a
+certain junction sequence Lsd, the update process is exe-
+cuted in reverse, as presented in Algorithm 2. For each pair
+of adjacent junctions in Lsd, this algorithm ﬁrst calls the
+Reward Model to calculate the immediate reward R and
+then updates the corresponding table entry according to
+Eq. (2). Finally, it ends at c ¼ Js and returns the updated
+table.
+The routing table learned in a virtual agent is named a
+policy, as it can be used to guide the agent to plan road
+paths for data transmission. All virtual agents learn policies
+in the same way, but differ when it comes to the reward
+because they pursue different routing performance goals.
+As follows, we separately explain the settings of reward in
+this paper, including RPDR, RAD, RHC, and RRC.
+RPDR is expressed as the packet delivery ratio-related
+reward. It indicates the immediate feedback after execut-
+ing action a in state ðc; dÞ. In this paper, because only paths
+that realize successful delivery are reported to the agent
+for policy update, we determine the reward as a constant
+RPDRðc; d; aÞ ¼ 1 to highlight these paths.
+RAD is expressed as the average delay-related reward,
+calculated by
+RADðc; d; aÞ ¼
+1  ADca
+ADsd
+
+
+
+1  ADsd
+mADsd
+
+
+;
+(3)
+where ADsd is the delay of packet transmission on path Lsd,
+and mADsd is the recorded longest delay. ADca represents
+the time spent on road Lca.
+RHC is expressed as the hop count-related reward, calcu-
+lated by
+RHCðc; d; aÞ ¼ exp  HCca  C
+lca
+
+
+;
+(4)
+where HCca is the hop count on road Lca and lc;a denotes the
+road length. C is the vehicle communication radius.
+RRC is expressed as the routing cost-related reward, cal-
+culated by
+RRCðc; d; aÞ ¼
+1 þ RCca
+CCca
+1
+
+
+;
+(5)
+where RCca is the number of control messages generated
+by relay vehicles on road Lca, and CCca is the number of
+control messages generated by all vehicles during packet
+transmission.
+In the end, the IDT-SDVN controller obtains the policy
+set Q ¼ fQPDR; QAD; QHC; QRCg, where QPDR, QAD, QHC,
+and QRC derive from the DTN-agent pairs labeled by PDR,
+AD, HC, and RC, respectively.
+The main reason for implementing RL is to provide
+online and adaptive routing policy learning abilities for
+DTNs. To make Q adapt to dynamic network topology and
+situations, we repeatedly execute the routing path explora-
+tion process as discussed in Case 3 and conduct virtual
+inter-vehicle communication based on multiple settings,
+including varying distances between source vehicles and
+destination vehicles. Moreover, considering rewards are set
+according to routing results, values in Q are changing after
+each episode. However, an appropriate policy set should
+highlight the best choice when selecting intermediate roads
+in physical networks.
+Algorithm 2. Routing Policy Update in Parallel Learners
+Input: A junction list Lsucc
+Output: An updated routing table
+1: d  Lsucc½1
+2: for i 2 ½lenðLsuccÞ  1; . . . ; 1 do
+3:
+c  Lsucc½i  1
+4:
+a  Lsucc½i
+5:
+Calculate R by R ¼ 1, Eq. (3), (4), or (5)
+6:
+Qðc; d; aÞ ¼ Qðc; d; aÞ þ a½R þ gðmaxh Qða; d; hÞ
+Qðs; d; aÞÞ
+7: end for
+8: return Q
+4.2
+Experience Fusion
+In DTNs, virtual agents learn multiple routing policies in
+parallel, and each policy aims to realize the perfect perfor-
+mance of one routing metric. However, it is quite likely that
+the routing path with the best performance in a certain met-
+ric may be the one with the worst performance in other met-
+rics. This situation may reduce the service quality of the
+whole network. In fact, transmitting a certain type of mes-
+sage always has more than one metric requirement. For
+example, collision avoidance messages broadcasting needs
+both a high delivery rate and low delay. Thus, in this sec-
+tion, we introduce a policy fusion mechanism to generate
+new policies that adhere to various service requirements
+and describe two executed fusion techniques in detail. Sepa-
+rating policy generation into these two steps, i.e., learning
+ZHAO ET AL.: ELITE: AN INTELLIGENT DIGITAL TWIN-BASED HIERARCHICAL ROUTING SCHEME FOR SOFTWARIZED VEHICULAR...
+5237
+Authorized licensed use limited to: University of Minnesota. Downloaded on September 14,2025 at 04:52:44 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+and fusion, have the following advantages. (i) It allows free-
+dom combinations of the learning results derived from
+DTNs, therefore, it is not necessary to develop more DTNs
+with the expansion of requirement types. (ii) A single objec-
+tive makes the learning process in a DTN easy to execute,
+and the fusion process is periodically activated, therefore,
+the computation resource occupation is reduced.
+For ease of calculation, input single-target policies are
+normalized bylines ﬁrst. Then, based on the standard data,
+we carry out the fusion mechanism in two ways: weight-
+based fusion and fuzzy logic-based fusion. The reason for
+utilizing fuzzy logic is that it can solve problems with fuzzy
+concepts such as “perform well on PDR” or “perform badly
+on PDR”. After fusion, the controller can obtain available
+routing policies for deployment. In this paper, we present
+four types of generated policies, which will be discussed
+later, according to potential communication requirements.
+4.2.1
+Preprocessing
+Normally, values recorded in Q distribute in a large range
+due to the difference in learning rate between parallel
+agents. To unify the evaluation criteria and easily carry out
+fusion mechanisms, all entries in the learned policies should
+be normalized into the range (0,1]. Bound by the current
+junction Ji and the target junction Jj, the value of Jk (an
+adjacent junction of Ji) in the table Qx is normalized by
+Qnorm
+x
+ði; j; kÞ ¼ min 1; log ð1 þ Qxði; j; kÞÞ
+log ðmaqxði; jÞÞ
+
+
+;
+(6)
+where
+maqxði; jÞ ¼ maxvi;j
+¼ maxQxði; j; pÞ; 8Jp 2 Ni;
+(7)
+is the maximum value among all adjacent junctions of Ji. Ni
+denotes the set of adjacent junctions of Ji. By implementing
+normalization upon Q, we can obtain the normalized policy
+set Qnorm ¼ fQnorm
+PDR ; Qnorm
+AD ; Qnorm
+HC ; Qnorm
+RC g
+4.2.2
+Weight-Based Fusion
+One type of policy fusion mechanism in this paper is imple-
+mented in the form of weight-based fusion, described as an
+average of parallel agents’ independently learned policies.
+The output is a new policy Gbas in which an entry is calcu-
+lated by
+Gbasði; j; kÞ ¼ 1
+n 
+X
+Qnorm
+x
+ði; j; kÞ; 8Qnorm
+x
+2 Qnorm;
+(8)
+where Qnorm
+x
+ði; j; kÞ denotes an entry in the normalized table
+Qnorm
+x
+. Ji, Jj, and Jk represent the current junction, the desti-
+nation junction, and an adjacent junction of Ji, respectively.
+By traversing all entries in Qnorm, we ﬁnally obtain the ﬁrst
+type of generated routing policy, the Basis Policy (BP).
+Similarly, fuzzy logic-based fusion, which will be pre-
+sented later, also aims to derive heterogeneous routing poli-
+cies by integrating the accumulated experience of partial or
+all parallel agents. In practice, instead of employing a
+weighted average, the fuzzy logic-based fusion mechanism
+implements policy generation by designing various fuzzy/
+fusion rules.
+4.2.3
+Fuzzy Logic-Based Fusion
+The fuzzy logic-based fusion mechanism is responsible for
+generating various routing policies according to potential
+communication requirements. It is an implementation of
+fuzzy logic in data fusion, including preprocessing, fuzziﬁ-
+cation, fuzzy inference, and defuzziﬁcation. In this way,
+based on the input normalized policy set, the fuzzy logic-
+based fusion mechanism generates new available routing
+policies that will be applied later in physical vehicular
+networks.
+Algorithm 3 elaborates on the process of executing fuzzy
+fusion in four steps: (i) determining the processing vector vi;j;k
+by querying Qnorm (Line 2); (ii) calculating fuzzy values for
+each item in vi;j;k (Lines 4-5); (iii) mapping fuzzy values to
+fuzzy output based on the Min-Max fuzzy inference method
+and the predeﬁned fuzzy rule table Ft (Line 7); and (iv) con-
+verting the fuzzy output to a crisp value (Line 9). After
+P m  Ni; 8Ji 2 J cycles, a new policy Gt is obtained. In addi-
+tion, more policies can be generated by expanding the rule
+base.
+Algorithm 3. Fuzzy Logic-Based Policy Fusion
+Input: A normalized policy set Qnorm, and a rule table Ft
+Output: A new policy Gt
+1: for Ji 2 J, Jj 2 J; Jk 2 Ni do
+2:
+vi;j;k  ðQnorm
+l
+ði; j; kÞÞ; 8Qnorm
+l
+2 Qnorm
+3:
+# fuzziﬁcation
+4:
+Classify all e 2 vi;j;k based on fuzzy sets
+5:
+Get the grade of membership for each e 2 vi;j;k
+based on Fig. 4a
+6:
+# fuzzy inference
+7:
+Reasoning by Ft-based Min-Max Inference
+8:
+# defuzziﬁcation
+9:
+Compute Gtði; j; kÞ based on Fig. 4b by CoG
+10: end for
+11: return Gt
+(1) Fuzziﬁcation. This process converts a numerical value
+to a fuzzy value based on predeﬁned membership func-
+tions. Here, we deﬁne the four inputs as linguistic variables,
+R labeled by PRR, D labeled by AD, H labeled by HC, and
+S labeled by RC. Each variable has three sets of measure-
+ment items: TðRÞ ¼ fPoor; Medium; Goodg, TðDÞ ¼ fShort;
+Middle; Longg, TðHÞ ¼ fBad; Medium; Goodg, and TðSÞ ¼
+fLow; Medium; Highg. Each item is modeled by a fuzzy set
+and map with crisp input values based on membership
+functions. The fuzzy membership functions demonstrate to
+Fig. 4. (a) Input membership and (b) output membership functions.
+5238
+IEEE TRANSACTIONS ON MOBILE COMPUTING, VOL. 22, NO. 9, SEPTEMBER 2023
+Authorized licensed use limited to: University of Minnesota. Downloaded on September 14,2025 at 04:52:44 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+which degree an input belongs to its corresponding fuzzy
+sets.
+The method of designing fuzzy input membership func-
+tions is shown in Fig. 4a. The triangle membership function
+is used since it is easy to model and performs adequately
+for the proposed fusion mechanism. In practice, for a proc-
+essing vector ui;j;k, we ﬁrst determine the maximum value
+mv ¼ maxðvi;j;kÞ. Then, the intersections of membership
+curves and the x-axis are separately set to ð0:8mv; 0Þ,
+ð0:5mv; 0Þ, and ð0:2mv; 0Þ. Accordingly, the membership
+functions can be easily determined.
+(2) Rule-based fuzzy inference. After calculating the fuzzy
+values of the four inputs, we utilize the predeﬁned IF-
+THEN rule table to map these fuzzy values to fuzzy output
+which is denoted by the Grade. The Grade represents the
+evaluation of roads in terms of packet delivery ability. The
+linguistic variable of the Grade is deﬁned as the combina-
+tion of fWorst; Bad; Medium; Good; Excellentg, and the cor-
+responding membership functions are shown in Fig. 4b.
+Most existing rule-based fuzzy inference algorithms
+assume an accurate knowledge of fuzzy questions. It allows
+setting intuitively optimal rules based on expert experience.
+In this paper, considering the potential lack of understand-
+ing of the relation between routing metrics and request
+types, we introduce a numerical approach while designing
+fuzzy rules. A fuzzy rule table in this paper includes 3  3 
+3 rules, and each rule consists of three antecedent items and
+a consequent item. Each antecedent item is assigned to two
+parameters, weight (W) and score (S). W indicates the inﬂu-
+ence of an antecedent item on the consequence, P W ¼ 1. S
+is determined according to the belonged fuzzy set. In detail,
+W is set by experience, and the three fuzzy sets level 1,
+level 2, and level 3 (shown in Fig. 4a) correspond to S ¼
+1=3, S ¼ 2=3, and S ¼ 1, respectively. While designing
+fuzzy rules one by one, we ﬁrst calculate g by
+g ¼ W1  S1 þ W2  S2 þ W3  S3;
+(9)
+where g ranges in [0,1], and it is a numerical representation
+of the consequent. According to the calculated g value, we
+can determine the consequent by
+Grade ¼
+Worst
+0  g < 0:2
+Bad
+0:2  g < 0:4
+Medium
+0:4  g < 0:6
+Good
+0:6  g < 0:8
+Excellent
+0:8  g  1
+8
+>
+>
+>
+>
+<
+>
+>
+>
+>
+:
+(10)
+In this way, a fuzzy rule table can be deﬁned. The
+Mamdani’s Min-Max fuzzy inference method is utilized to
+derive fuzzy outputs. In this method, the fuzzy operator ﬁrst
+takes the minimum value among antecedent items in each
+activated rule as the weight of the consequent item. Then, as
+multiple activated rules may have the same consequence, we
+select the maximum value of the consequence as the ﬁnal
+output membership when combining these rules.
+(3) Defuzziﬁcation. The process of producing a numerical
+output based on inference results and predeﬁned output
+membership functions is called “defuzziﬁcation”. The Center
+of Gravity method is employed to defuzzify the fuzzy output,
+as it equips smooth output control and is widely used in
+practice. We set the crisp output obtained through defuzziﬁ-
+cation as an entry in the newly generated routing policy.
+In this paper, we propose three alternate routing policies
+by the fuzzy logic method as above: High Reachability First
+(HRF), Low Delay First (LDF), and Load Balancing First
+(LBF). Details of the proposed policies are as follows.
+HRF. Intuitively, the one with the highest predictive
+packet delivery rate among all candidate roads is preferred,
+as it has the greatest probability of forwarding packets to
+the destination. However, high reachability may always be
+accompanied by long end-to-end delay and excessive band-
+width consumption, which are caused by following the sub-
+optimal path selection in distance and frequent reschedul-
+ing. Thus, we deﬁne HRF as the combination of three met-
+rics with weights of fPDR : 0:5; AD : 0:25; RC : 0:25g.
+LDF. The main purpose of LDF is to provide stable and
+efﬁcient service. Shorter delays will bring about better per-
+formance on time-constraint services. Moreover, consider-
+ing the carry-and-forward strategy, LDF can save sufﬁcient
+time for rescheduling once the last transmission fails. Nev-
+ertheless, blindly pursuing a short delay may lower the
+packet reachability. Considering these factors, LDF is
+deﬁned as fAD : 0:5; HC : 0:25; PDR : 0:25g.
+LBF. Considering the constraints of bandwidth and com-
+puting capacity, a large number of packets ﬂowing into a
+junction or road must result in data congestion, and corre-
+spondingly degrade the service quality. In the high-level
+load network, LBF is treated as a viable solution to ensure
+global load balance as well as providing stable data trans-
+mission. By taking overhead into consideration, the LBF can
+evaluate the real-time road load. Moreover, a low hop count
+and short delay also have the advantage of reducing the
+number of detection messages during data transmission.
+Thus, LBF is deﬁned as fRC : 0:5; HC : 0:25; AD : 0:25g.
+As a result, together with the weight-based fusion method,
+we can obtain four policies for certain service requirements,
+i.e., BP, HRF, LDF, and LBF, denoted by G ¼ fGbas; GHRF;
+GLDF; GLBFg. All these policies are maintained by the control-
+ler and intelligently deployed to the physical vehicular net-
+works, according to the method mentioned in the next section.
+4.3
+Application in Physical Side of IDT-SDVN
+In this section, we present the way of applying generated
+policies in the physical side of IDT-SDVN, which aims to
+optimize policy deployment and provide valid route plan-
+ning. The policy application mechanism in ELITE consists of
+three essential parts. (i) A routing policy set G which is used
+to calculate road paths. (ii) A state-action table that is estab-
+lished to select and deploy the optimal policy in G to the
+physical network. (iii) A road-based routing strategy that is
+responsible for determining relay nodes hop-by-hop along
+road paths. In what follows, we ﬁrst discuss how to intelli-
+gently select and deploy the optimal one among all policies
+to the physical network. Then, we investigate the road-based
+hierarchical routing strategy. Finally, adaptive refreshing of
+the policy deployment mechanism is presented in detail.
+4.3.1
+State-Action Table-Based Policy Deployment
+The policy deployment mechanism is implemented based
+on a state-action table. It helps the controller to provide the
+ZHAO ET AL.: ELITE: AN INTELLIGENT DIGITAL TWIN-BASED HIERARCHICAL ROUTING SCHEME FOR SOFTWARIZED VEHICULAR...
+5239
+Authorized licensed use limited to: University of Minnesota. Downloaded on September 14,2025 at 04:52:44 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+optimal policy selection according to the real-time network
+load. As presented at the top of Fig. 5a, a value in the state-
+action table is deﬁned as Pðstate; actionÞ representing the
+expected rewards of taking action from state. The state
+space is determined on the basis of the service requirement
+type and the network load, and the action space consists of
+three policies GHRF, GLDF, and GLBF. In this paper, there
+are four types of requirements, including security (accident
+forewarning, reverse overtaking warning, etc.), efﬁciency
+(speed guide, congestion alert, etc.), information services
+(differential data sharing, ﬂoating car data collection, etc.),
+and entertainment (multimedia equipment interconnection,
+etc.). There are also three network load divisions, including
+[0,0.3), [0.3,0.7], and (0.7,1.0]. Thereby, the size of the state
+space is 43.
+Fig. 5a illustrates
+the
+whole
+procedure
+of
+policy
+deployment in the IDT-SDVN controller. Once the cen-
+tral controller receives a routing request from vehicles, it
+ﬁrst determines the road path Lbas for this request based
+on Gbas, as shown in steps (1) and (2), and then calcu-
+lates the road load by
+loadbas ¼ min
+Lbas
+avg
+Bw ; 1
+ 
+!
+;
+(11)
+where Lbas
+avg is the average buffer usage, formulated by Lbas
+avg ¼
+Lbas
+sumnvbas. nvbas and Lbas
+sum separately indicate the number of
+vehicles and the total occupied buffer length of all vehicles
+on the path Lbas. Bw is the channel bandwidth. Step (3)
+determines the current state based on the requirement type
+and the calculated path load. Then, it is easy to obtain the
+most suitable policy for application by querying the state-
+action table. As demonstrated in step (4), we assume that
+the current state is S1; then, GLDF is selected because it has
+the maximum value. After that, the controller calculates a
+junction sequence LLDF via GLDF and sends it to the
+requester, as presented in steps (5)-(7).
+4.3.2
+Road-Based Hierarchical Routing Strategy
+The proposed road-based hierarchical routing strategy is a
+combination of a junction selection strategy in the controller
+and a relay vehicle selection strategy in distributed vehicu-
+lar networks.
+(1) Junction selection. Here we introduce how to utilize the
+deployed policy Gop 2 G to calculate a junction sequence
+Lsd, thereby determining the road path from the source
+junction Js to the target junction Jd. In Lsd, each item Jc is
+the best choice of its previous item Jp, obtained by
+c ¼ max
+8Jn2Np Gopðp; d; nÞ;
+(12)
+where c, p, d, and n are the IDs of Jc, Jp, Jd, and Jn, respec-
+tively. After the computation, Lsd is sent to the routing
+requester in the form of a reply message.
+(2) Relay vehicle selection. Once receiving the reply mes-
+sage sent from the controller, the requester inserts the
+assigned road path into the header of packets, and all packet
+receivers select the next forwarder along this path based on
+the road-based greedy routing strategy. In this case, packets
+are delivered hop-by-hop along the path until achieving the
+destination vehicle.
+We deﬁne Vc as the current vehicle, which is located
+within the coverage of the current junction Jc. Here, Vd is
+the destination vehicle in the target junction Jd, and Jn is
+the next junction of Jc recorded in the junction sequence L.
+According to the designed relay vehicle selection strategy,
+there are two cases we need to consider when selecting the
+relay vehicle on the road.
+Case 1, meeting the greedy condition: If there are more
+than one Vc’s neighbor vehicles located closer to Jn/Vd, the
+current vehicle Vc will select the neighbor that is the closest
+to Jn/Vd.
+Case 2, violating the greedy condition: If a void appears,
+that is, there is no Vc’s neighbor vehicle located nearer to
+Jn/Vd, Vc will select the neighbor that is nearest to the cur-
+rent junction Jc. This is because data packets inside junc-
+tions are given more forwarding opportunities from vehicle
+aggregation.
+4.3.3
+State-Action Table Maintenance
+A stable state-action table is a key foundation to provide
+efﬁcient and accurate policy deployment. The iterations for
+the table are performed upon reception of report messages.
+As shown in Fig. 5b, in VNs, the packet receiver or failure
+node reports routing results to the central controller after
+once packet delivery (step (1)). Then, the controller updates
+the corresponding item in the state-action table according to
+the entire transmission path (step (2)) and path information
+(step (3)). One-step update of each ðstate; actionÞ pair is
+deﬁned by
+Pðstate; actionÞþ ¼ R0ðstate; actionÞ:
+(13)
+Fig. 5. (a) State-action table aided routing policy deployment and road path planning. (b) The structure of state-action table maintenance.
+5240
+IEEE TRANSACTIONS ON MOBILE COMPUTING, VOL. 22, NO. 9, SEPTEMBER 2023
+Authorized licensed use limited to: University of Minnesota. Downloaded on September 14,2025 at 04:52:44 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+We deﬁne reward R0 in light of the routing performance
+of the deployed policy (step (4)). The four metrics intro-
+duced in Section 4.1.1 are taken for the evaluation of the pol-
+icy deployment mechanism. In this case, we formulate the
+reward function as
+R0 ¼ fðPRR; AD; HC; RCÞ
+¼ a  gðADsdÞ þ b  qðHCsdÞ þ g  lðRCsdÞ;
+(14)
+where
+g ADsd
+ð
+Þ ¼
+X
+Jc2Lsd
+RAD c; d; xc
+ð
+Þ=nsd
+(15)
+q HCsd
+ð
+Þ ¼
+X
+Jc2Lsd
+RHC c; d; xc
+ð
+Þ=nsd
+(16)
+l RCsd
+ð
+Þ ¼
+X
+Ja2Lsd
+RRC c; d; xc
+ð
+Þ=nsd
+(17)
+denote the average delay-related, hop count-related, and
+routing cost-related characteristics of path Lsd, respectively.
+Jc is a junction on Lsd, and xc indicates the next junction of
+Jc. nsd is the number of road segment contained in Lsd. Note
+that Lsd is calculated based on the deployed policy action.
+Details of the variables are presented in Section 4.1.2 (3). a,
+b, and g indicate the weights whose crisp values are deter-
+mined by action. For illustration, LDF is deﬁned by fAD :
+0:5; HC : 0:25; PDR : 0:25g in the fuzzy fusion process (dis-
+cussed at the end of Section 4.2). Thus, three parameters are
+a ¼ 0:5; b ¼ 0:25; g ¼ 0. After the controller receives a path
+that is determined under state S1 and policy GLDF, it
+updates item ðS1; GLDFÞ in the state-action table by
+R0
+LDF ¼ 0:25  ADsa þ 0:25  HCsa
+(18)
+PðS1; GLDFÞ ¼ PðS1; GLDFÞ þ R0
+LDF
+(19)
+5
+PERFORMANCE EVALUATION
+This section is devoted to the performance evaluation of our
+proposed intELligent dIgital Twin hiErarchical (ELITE) rout-
+ing. First, we introduce the simulation environment, includ-
+ing basic parameter settings, evaluation metrics, varying
+scenarios, and representative schemes for comparison. Sec-
+ond, experimental simulations are conducted based on these
+settings for performance evaluation.
+5.1
+Simulation Environment
+5.1.1
+Basic Settings
+We downloaded the simulation map from OpenStreetMap
+and generated trafﬁc ﬂows by Simulation of Urban Mobility
+(SUMO). The map is a real urban scenario in Shandong
+province, China of an area of 1.5 km x 1.5 km with 12 junc-
+tions and 26 roads. Accordingly, in our simulations, the
+routing table maintained by the IDT-SDVN controller con-
+tains a rough number of 12 x 4 x 11 entries. There are 50 to
+250 vehicles per kilometer road and all vehicles have ran-
+dom origins and destinations. The simulation is conducted
+strictly following the IEEE 802.11p standard. While routing,
+the number of messages generated per vehicle varies from 1
+to 5 packets per second. In the policy application phase, we
+initialize the state-action table randomly, as shown in
+Table 2. More simulation environment parameters can be
+found in Table 3. The source code of our simulation is avail-
+able online at the link: https://github.com/NetworkCom-
+munication/ELITE-zg.
+5.1.2
+Evaluation Metrics and Scenarios
+We introduce the following performance metrics to evaluate
+the simulation results.
+(1) Packet delivery ratio (PDR) and (2) average delay (AD)
+are two key metrics that can directly reﬂect network stabil-
+ity and communication quality in VNs. Further details on
+these two metrics are described in Section 4.1.1.
+(3) Path length (PL) indicates the packet transmission dis-
+tance from generators (source) to receivers (destination),
+calculated by the sum of the air-line distance between every
+two adjacent relays.
+(4) Routing overhead (RO) is deﬁned as the average num-
+ber of routing control messages generated by relay vehicles
+for constructing a routing path. The routing control mes-
+sages include beacons for neighbor detection and light-
+weight packets for routing requests, path discovery, and
+essential information reports.
+(5) Control overhead (CO) is expressed as the average
+number of network control messages generated per second
+for maintaining routing tables in case of no data routing.
+The network control messages include vehicle beacons and
+vehicular information report messages, and especially in
+ELITE, the virtual packets for policy training in DTNs are
+also considered. Generally, generated network control mes-
+sages allow basic information sharing between vehicles and
+RSUs and beneﬁt to online routing model updating, but can
+cause abundant computation and bandwidth resource con-
+sumption. In this paper, CO acts as a vital performance
+TABLE 2
+Initialization of the State-Action Table
+Message type
+Load
+Value
+GHRF
+GLDF
+GLBF
+Security
+0-1.0
+1
+0
+0
+Efﬁciency
+0-1.0
+1
+1
+0
+Information service
+0-0.3
+1
+0
+0
+0.3-1.0
+0
+0
+1
+Entertainment
+0-1.0
+0
+0
+1
+TABLE 3
+Simulation Parameters
+Parameter
+Value
+Network size
+1500m1500 m
+Number of junctions
+12
+Number of vehicles
+350, 700, 1050, 1400, 1750
+S-D distance
+0-375 m, -750 m, -1125 m, -1500 m
+Average speed
+023 m/s
+Communication range
+300 m
+Generation rate
+15 packets/second
+Beacon interval
+1 s
+Data packet size
+1024 Bytes for data packets,
+256 Bytes for control packets
+MAC protocol
+IEEE 802.11p
+ZHAO ET AL.: ELITE: AN INTELLIGENT DIGITAL TWIN-BASED HIERARCHICAL ROUTING SCHEME FOR SOFTWARIZED VEHICULAR...
+5241
+Authorized licensed use limited to: University of Minnesota. Downloaded on September 14,2025 at 04:52:44 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+metric to evaluate the essential resource consumption for
+realizing schemes/policies in both virtual and physical
+sides of IDT-SDVNs.
+To comprehensively evaluate the performance of ELITE,
+extensive experimental simulations are performed under
+three scenarios with different parameter constraints.
+(1) Number of vehicles. To demonstrate the impact of dif-
+ferent vehicle densities on ELITE, we set up ﬁve groups of
+experiments with a different number of on-road vehicles
+from 350 to 1750, as presented in Table 3.
+(2) Average distance from Sources to Destinations (S-D dis-
+tance). To evaluate the performance of ELITE in both short-
+distance and long-distance data transmission, in simula-
+tions, the distance between each pair of source and destina-
+tion is uniformly distributed in (0 m-375 m), (375 m-750 m),
+(750 m-1125 m), and (1125 m-1500 m).
+(3) Number of packets. By dynamically changing the packet
+generation rate, ELITE is evaluated under various network
+load situations. With 1050 vehicles on the map, we set the
+total number of generated packets varying from 1000 to
+5000 per second and carry out ﬁve groups of simulation
+experiments accordingly.
+5.1.3
+Schemes for Comparison
+We compare our proposed ELITE scheme with three differ-
+ent algorithms, Q-learning-based Cognitive Routing (QCR)
+[9], Intersection-based V2X routing via Q-learning (IV2XQ)
+[14], and Intersection Gateway and Connectivity based
+Routing (IGCR) [41]. We also consider two scenarios that
+ELITE with the application of RSU and QCR with the appli-
+cation of DT to present a more comprehensive comparison
+and evaluation.
+(1) QCR is an intelligent routing scheme switching
+scheme in Software-Deﬁned Cognitive Network for IoV, in
+which the Q-learning method is utilized to learn the optimal
+strategy in varying trafﬁc scenarios. It enabled adaptive
+strategy switching between Greedy Perimeter Stateless
+Routing (GPSR) and Ad hoc On-Demand Distance Vector
+Routing (AODV) according to the sensed network status.
+(2) IV2XQ is a hierarchical routing scheme in road-based
+vehicular networks. It consists of two parts: a multidimen-
+sional Q-table that is established based on historical trafﬁc
+ﬂow and implemented to select road paths, and an
+improved greedy strategy to select relay vehicles.
+(3) IGCR is a distributed routing scheme of VANETs.
+During routing, trafﬁc-aware routing metrics such as node
+mobility and trafﬁc density are considered for route discov-
+ery with high connectivity, while node position, velocity,
+and direction are used to select relay nodes.
+(4) In ELITE-RSU, RSUs are considered and responsible
+for data transmission at junctions. When the packet sender
+reaches a junction, it will forward packets to the nearby
+RSU. This RSU selects one vehicle which is the geographi-
+cally closest to the next target junction or destination vehicle
+among its connected vehicles as the next relay node.
+(5) In QCR-DT, the Q-table training process is online and
+executed in the DTN, in which the DTN has the same net-
+work setup as the physical network. During real data rout-
+ing, decisions are made entirely based on the Q-table rather
+than the epsilon-greedy policy.
+5.2
+Performance Comparison Among Single-Target
+Policies and Generated Policies
+In this section, we show a comprehensive comparison
+among single-target policies in Q and generated policies in
+G in terms of PDR, AD, PL, and RO in Figs. 6a, 6b, 6c, and 6
+(d). Policies are evaluated under the scenario 1050 vehicles
+on the map with the S-D distance and packets generation
+rate evenly ranging in 01500 m and 15 packet/second,
+respectively.
+As shown in Fig. 6a, the PDR of utilizing QPDR and GHRF
+performs better than other policies. This is mainly because,
+in these policies, road paths with a high probability of suc-
+cessful packet delivery have been highlighted during the
+exploration and experience accumulation process in DTNs.
+Different from this, rewards designed for training QAD,
+QHC, and QRC only consider average end-to-end delay, hop
+count, and cost on a road, respectively. Similarly in Figs. 6b,
+6c, and 6(d), packet delivery abilities of roads in terms of
+different metrics are well distinguished by Q and G. It is
+worth illustrating that although routing based on G some-
+times performs worse than Q in certain metrics, it shows
+better comprehensive performance as policies in G tend to
+ﬁnd a trade-off among multiple metrics for satisfying
+diverse service requirements. QRC presents the longest
+delay and routing path due to the selection of geographi-
+cally non-optimal roads in path scheduling. However, it can
+reduce the number of generated control messages during
+routing signiﬁcantly. In practice, GLBF is always used in
+scenarios with high network load such as multimedia data
+transmission to ensure the load balancing and guarantee
+service quality.
+As discussed above, it is obvious that implementing DT
+in VNs is feasible and effective. This point can be demon-
+strated in two aspects. First, compared with conventional
+online model learning mechanisms, policy learning in
+DTNs alleviates the impact of network performance caused
+by frequent exploration processes in the physical world sig-
+niﬁcantly (about 20% packet loss as shown in Fig. 6a).
+Fig. 6. Performance comparison among policies in Q and G in terms of (a) PDR, (b) AD, (c) PL, and (d) RO.
+5242
+IEEE TRANSACTIONS ON MOBILE COMPUTING, VOL. 22, NO. 9, SEPTEMBER 2023
+Authorized licensed use limited to: University of Minnesota. Downloaded on September 14,2025 at 04:52:44 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+Policies that adapt to current network situations can be
+learned by DTN-agent pairs and used in physical networks
+for routing discovery. Second, single-target policies are scal-
+able and easy to train. By expanding G, generated policy set
+shows great potential in satisfying the diverse changing sce-
+narios and temporal service requirements. More compre-
+hensive evaluations of ELITE and further veriﬁcation are
+presented in the next section.
+5.3
+Simulation Performance Evaluation for ELITE
+5.3.1
+Evaluation of PDR
+(1) Varying number of vehicles. Fig. 7a illustrates the packet
+delivery ratio for varying vehicle densities with the average S-
+D distance uniformly ranging from 0 m to 1500 m. This con-
+straint is also applied in the evaluations of other metrics. As
+shown, with an increasing number of vehicles, the PDR of
+all the six schemes shows an upward trend. This tendency
+occurs because, in low-density scenarios, packets are more
+likely to be trapped in dead zones that have no valid next-hop
+candidates, while in high-density scenarios, this dilemma is
+greatly improved. In our proposed ELITE, road paths have
+been extensively evaluated in parallel digital twin networks
+before being deployed. Thus, it shows acceptable perfor-
+mance in PDR and keeps an increasing trend, especially
+when the number of vehicles exceeds 1400, the PDR is
+greater than 90%. As shown, IV2XQ has the best perfor-
+mance when the number of vehicles is less than 1400, which
+mainly beneﬁts from it utilizing RSUs at junctions to forward
+packets; therefore, even at junctions with sparse vehicle dis-
+tribution, packets can also be successfully transmitted. By
+applying RSUs at junctions, ELITE-RSU can increase the
+PDR under all vehicle densities signiﬁcantly. Packets reach-
+ing junctions can be directly forwarded to relays located at
+the next intermediate road. Compared with QCR, QCR-DT
+achieves about 10% performance improvement as its routing
+policy selection strategy has been pre-veriﬁed in DTNs
+before applying in physical networks.
+(2) Varying S-D distance. Fig. 7b shows the changes of
+packet delivery ratio under varying S-D distances with the
+number of vehicles in the network being 1500. As the trans-
+mission distance expands, the PDR of all schemes decreases,
+because long transmission needs frequent relay node
+switches, which may accumulate the risks of packet loss.
+Similar to the scenes in varying vehicle densities, when the
+S-D distance exceeds a certain threshold (750 m), the perfor-
+mance of our proposed ELITE in PDR is worse than that of
+IV2XQ. This can be explained in two aspects: First, ELITE
+pays attention to the whole network performance and aims
+to provide routing support for diversiﬁed requirements
+rather than a certain metric. Second, IV2XQ utilizes RSUs to
+forward packets at junctions, and this process can substan-
+tially improve the ﬁnal packet delivery ratio. In ELITE-RSU,
+RSUs at junctions empower the routing paths with stronger
+connectivity, thereby optimizing the routing performance of
+ELITE in terms of PDR. Moreover, this improvement
+expands with S-D distance as the curves shown in Fig. 7b.
+All schemes completely or partially implement greedy selec-
+tion. However, while making relay selection decisions,
+ELITE and IV2XQ pre-calculate the junction sequence that
+has the optimal network condition, while QCR and IGCR
+entirely relies on topological information. Thus, both ELITE
+Fig. 7. Packet delivery ratio under (a) various number of vehicles, (b) various S-D distance, and (c) various number of packets. Average end-to-end
+delay under (d) various number of vehicles, (e) various S-D distance, and (f) various number of packets. Path length under (g) various number of
+vehicles and (h) various S-D distance. Routing overhead under (i) various number of vehicles and (j) various S-D distance. (k) Control overhead under
+various number of vehicles.
+ZHAO ET AL.: ELITE: AN INTELLIGENT DIGITAL TWIN-BASED HIERARCHICAL ROUTING SCHEME FOR SOFTWARIZED VEHICULAR...
+5243
+Authorized licensed use limited to: University of Minnesota. Downloaded on September 14,2025 at 04:52:44 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+and IV2XQ show better performance in PDR than QCR and
+IGCR.
+(3) Varying number of packets. Fig. 7c shows the packet
+delivery ratio versus network load. As the number of gener-
+ated packets increases, the PDR values of all schemes
+decreases. This result occurs because of the increasing risk
+of network congestion. Under all network load conditions,
+the proposed ELITE and ELITE-RSU perform better than
+others. This can be explained from two perspectives. (i)
+Routing along the paths calculated based on the policy QRC
+generates fewer routing control messages. (ii) ELITE and
+ELITE-RSU also implement an intelligent policy application
+mechanism to switch policies adaptively according to real-
+time network load and message type. In this way, alterna-
+tive routing paths are considered for certain data transmis-
+sions to keep the global load balance. Beneﬁted from pre-
+veriﬁcation, QCR-DT performs better than QCR. However,
+due to the performance bottleneck of GPSR and AODV, this
+improvement is weakened in the case of more than 3000
+packets in the network.
+5.3.2
+Evaluation of AD
+(1) Varying number of vehicles. Fig. 7d shows the effect of
+vehicle density on the average end-to-end delay. For all
+schemes, the AD increases with the vehicle density because
+during the next-hop relay selection process, packet receivers
+must deal with more one-hop information, thereby increas-
+ing the calculation delay. Compared with IV2XQ, QCR, and
+IGCR, ELITE achieves the best performance in AD under all
+vehicle densities for the following reasons. First, before pol-
+icy deployment, a certain policy has been generated with
+the target of low delay. Second, during the path planning
+process, the controller maintains a routing table set for all
+times and is enabled to calculate road paths by only query-
+ing those tables. Third, during the routing process, only
+position information is used to select the next-hop vehicle.
+As a result, the AD is considerably reduced. Among all
+comparisons, QCR has the longest delay, especially when
+the number of vehicles increases beyond 1050, the average
+delay increases sharply, as there exists long time consump-
+tion caused by frequent plane topology computation (in
+GPSR) and route discovery (in AODV and IGCR). It is
+worth discussing that the AD of ELITE-RSU is nearly dou-
+ble of ELITE and similar to IV2XQ. This is mainly because a
+large number of packets sent to the same RSU may lead to
+temporary data congestion and further long delay. More-
+over, in scenarios with high vehicular density, packets gen-
+erally can leave a junction within one or two hops, thereby
+leading to a shorter transmission delay compared with for-
+warding packets by RSUs.
+(2) Varying S-D distance. The performance comparison for
+evaluating the average end-to-end delay over the S-D distance
+is shown in Fig. 7e. Results express that the AD of all schemes
+grows as the S-D distance gets longer. The main reason is that
+a long S-D distance leads to more hops, and further increases
+computation time, transmission time, and sometimes queue
+time. Compared with IV2VQ, QCR, and IGCR, ELITE main-
+tains a shorter delay at different transmission distances. The
+key reason is that ELITE directly targets routing metrics,
+including AD, while training models. Nevertheless, IV2XQ,
+QCR, and IGCR only consider some basic road network-
+related attributes, such as vehicle density and speed. In
+ELITE, beneﬁted from the hierarchical routing structure, the
+packet holder far from its destination can perceive the net-
+work status beyond one hop to some extent, rather than
+select relays with limited network information.
+(3) Varying number of packets. Fig. 7f shows the average end-
+to-end delay of these schemes as the network load situation
+varies. As the number of packets ﬂowing in the network
+increases, the AD climbs up because the increment in the risk
+of data congestion cause longer queuing time during hop-by-
+hop transmission. Compared with other routing methods
+without the consideration of routing cost, the proposed ELITE
+and ELITE-RSU achieve a low AD beneﬁted by the load bal-
+ancing mechanism. The routing of IGCR is restricted by roads
+but pays more attention to common features such as vehicular
+density. This must cause severe data congestion on certain
+roads and further long delay or even packet loss.
+5.3.3
+Evaluation of PL
+(1) Varying number of vehicles. Fig. 7g shows the relationships
+between the average routing path length and the number of
+vehicles. The PL of all schemes decreases as the number of
+vehicles increases. In fact, the PL mainly depends on the S-
+D distance, hop count, and road path length (in road-based
+routing). On the one hand, once position-based greedy rout-
+ing strategies are used, the one-hop transmission distance
+most likely increases with the number of neighbor vehicles
+around packet holders, thereby decreasing the hop count
+from sources to destinations. On the other hand, in ELITE,
+the increment of vehicle density at junctions decreases
+search times caused by Case 2 in Section 4.3.2 (2), therefore
+making the next junction easier to reach with a few hops. In
+IV2XQ and ELITE-RSU, forwarding packets by RSUs at
+junctions markedly increases the hop count. Moreover, the
+application of alternative paths in IV2XQ also leads to a
+long road path. The PL of QCR and QCR-DT is shorter than
+others and remains relatively low. The main reason is that
+packet transmission is position-based rather than con-
+strained by tortuous road paths. Conversely, IGCR per-
+forms worst among RSU-free schemes due to the less
+consideration of hop count-related features such as inter-
+vehicle distance while selecting relay vehicles.
+(2) Varying S-D distance. Fig. 7h analyzes how the S-D dis-
+tance impacts the average routing path length. As shown,
+there are several observations to be explained. (i) The PL
+becomes longer for all schemes as the S-D distance increases.
+(ii) When the S-D distance exceeds 750, IV2XQ, IGCR, ELITE,
+and ELITE-RSU have a longer PL compared with QCR and
+QCR-DT, as they must forward packets along roads, while
+QCR and QCR-DT completely depend on the position infor-
+mation for packet delivery. (iii) Nevertheless, ELITE allevi-
+ates this restriction because of the consideration of hop count
+while generating junction selection policies. Therefore, the
+average path length of ELITE is shorter than that of the com-
+pared road-based routing schemes.
+5.3.4
+Evaluation of RO
+(1) Varying number of vehicles. Fig. 7i demonstrates the results
+of evaluating the routing overhead for these policies/schemes
+5244
+IEEE TRANSACTIONS ON MOBILE COMPUTING, VOL. 22, NO. 9, SEPTEMBER 2023
+Authorized licensed use limited to: University of Minnesota. Downloaded on September 14,2025 at 04:52:44 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+under varying numbers of vehicles. As the number of vehicles
+increases, the RO of IV2XQ and QCR increases rapidly, while
+that of ELITE remains at a relatively low level for the follow-
+ing reasons. First, unlik IV2XQ, QCR, and IGCR, ELITE takes
+the number of generated control messages as a crucial metric
+while training policies. This means that once congestion
+occurs, the controller can plan road paths based on GLBF for
+low-priority messages to balance the global overhead. In
+addition, in IV2XQ, QCR, and IGCR, vehicles need to fre-
+quently exchange information messages with their neighbors
+or RSUs for route discovery while routing. These processes
+result in high communication overhead.
+(2) Varying S-D distance. Fig. 7j shows the RO of the three
+routing schemes under different S-D distances. It is obvious
+that for all comparisons, the RO increases with increasing S-D
+distance. This is mainly because the longer paths there are to
+be established, the more links there are to be maintained,
+resulting in an increase in the number of routing control mes-
+sages for exchanging essential information between adjacent
+vehicles/RSUs. Compared with IV2XQ, QCR, and IGCR, the
+proposed ELITE achieves better performance in RO since it
+trains a load control policy to balance the global overhead.
+IV2XQ and QCR show similar performance in terms of RO.
+Although IV2XQ utilizes alternative routing paths for load
+balancing, it needs additional information exchanges between
+RSUs and their neighboring vehicles at junctions. Therefore, it
+leads to a rise in the number of routing control messages. In
+QCR, vehicles should periodically broadcast hello messages
+to maintain the neighbor list and generate massive informa-
+tion messages to discover routes in some cases. In IGCR,
+vehicles at junctions should interact with gateway ﬁxed nodes
+for routing discovery frequently, thereby leading to extra RO.
+Due to the increasing number of junctions contained in the
+routing path, the curve of IGCR rises with the S-D distance
+dramatically.
+5.3.5
+Evaluation of CO
+Fig. 7k shows the control overhead against the increase in the
+number of vehicles. The CO increases for all schemes with the
+vehicle density increasing, since both the controller/server
+and vehicles have more tasks to execute due to the growth of
+the number of communication requests and network control
+messages. As shown, the CO of IV2XQ, QCR, and IGCR is
+similar and lower than that of our proposed ELITE. The
+results can be explained in two aspects. First, vehicles under
+both these schemes should periodically broadcast beacons
+and send location-report messages to base stations or RSUs.
+Second, in ELITE, the central controller develops a group of
+DTNS for single-target policy learning, and this learning pro-
+cess is continuous and parallel. That means a large number of
+virtual communication processes are executed by each agent-
+DTN pair to output a satisfactory routing policy. This situa-
+tion also occurs in QCR-DT. As the settings in Table 2, about
+1080 virtual messages are generated in each DTN per sec-
+ond. Therefore, the CO of ELITE, ELITE-RSU, and QCR-DT
+climbs up dramatically as the vehicle density increases, and
+then keeps at a high level. Nevertheless, it is essential to
+explain that even the utilization of DT accompanied by exten-
+sive resource cost, the performance of ELITE in terms of
+PDR, AD, PL, and RO have gained great improvement.
+Therefore, the extra resource consumption in the policy gen-
+eration process in ELITE is acceptable.
+6
+CONCLUSION
+This paper presents the ELITE routing scheme in IDT-
+SDVN that aims to provide a road-based hierarchical rout-
+ing path planning method for frequent topological changes
+and complex service requests in vehicular networks. First, a
+group of DTN-agent pairs is deployed in the IDT-SDVN
+controller to learn single-target policies. Second, fuzzy infer-
+ence is responsible for combining the learned results into
+new policies. Then, we investigate an adaptive policy
+deployment mechanism to select the most suitable policy
+according to service requirements and trafﬁc situations.
+Finally, during transmission, a road path is planned based
+on the deployed policy, and packets are greedily forwarded
+along the path hop-by-hop.
+The principal theoretical implication of this study is that
+IDT-SDVN has the advantages of realizing intelligent genera-
+tion and adaptive iteration of routing policies. Simulation
+results show that in multi-hop data transmission in vehicular
+networks,
+our
+proposed
+scheme
+achieves
+considerable
+improvement in the packet delivery ratio, end-to-end delay,
+and routing path length while maintaining network load
+in an appropriate range compared with existing routing
+schemes. For the future, by optimizing the IDT-SDVN struc-
+ture in terms of resource savings, more virtual network spaces
+can be developed in the central controller, ensuring faster
+learning speed, encompassing more routing metrics, and cov-
+ering more types of services. In addition, developing trafﬁc
+prediction technologies and thereby establishing future topol-
+ogy-based DTNs is also a crucial issue to expand the functions
+of IDT-SDVN.
+REFERENCES
+[1]
+G. Karagiannis et al., “Vehicular networking: A survey and tutorial
+on requirements, architectures, challenges, standards and sol-
+utions,” IEEE Commun. Surv. Tut., vol. 13, no. 4, pp. 584–616,
+Oct.–Dec. 2011.
+[2]
+H. H. Jeong, Y. C. Shen, J. P. Jeong, and T. T. Oh, “A comprehen-
+sive survey on vehicular networking for safe and efﬁcient driving
+in smart transportation: A focus on systems, protocols, and
+applications,” Veh. Commun., vol. 31, 2021, Art. no. 100349.
+[3]
+B. Chaurasia, W. Manjoro, and M. Dhakar, “Trafﬁc congestion
+identiﬁcation and reduction,” Wireless Pers. Commun., vol. 114,
+pp. 1267–1286, Sep. 2020.
+[4]
+A. Hawbani et al., “Zone probabilistic routing for wireless sensor
+networks,” IEEE Trans. Mobile Comput., vol. 18, no. 3, pp. 728–741,
+Mar. 2019.
+[5]
+H. I. Abbasi, R. C. Voicu, J. A. Copeland, and Y. Chang, “Towards
+fast and reliable multihop routing in vanets,” IEEE Trans. Mobile
+Comput., vol. 19, no. 10, pp. 2461–2474, Oct. 2020.
+[6]
+M. Sepulcre and J. Gozalvez, “Heterogeneous V2V communica-
+tions in multi-link and multi-rat vehicular networks,” IEEE Trans.
+Mobile Comput., vol. 20, no. 1, pp. 162–173, Jan. 2021.
+[7]
+L. Zhao, J. Li, A. Al-Dubai, A. Y. Zomaya, G. Min, and A. Haw-
+bani, “Routing schemes in software-deﬁned vehicular networks:
+Design, open issues and challenges,” IEEE Intell. Transp. Syst.
+Mag., vol. 13, no. 4, pp. 217–226, Winter 2021.
+[8]
+L. Zhao, T. Zheng, M. Lin, A. Hawbani, J. Shang, and C. Fan,
+“SPIDER: A social computing inspired predictive routing scheme
+for softwarized vehicular networks,” IEEE Trans. Intell. Transp.
+Syst., early access, Oct. 29, 2021, doi: 10.1109/TITS.2021.3122438.
+[9]
+C. Wang, L. Zhang, Z. Li, and C. Jiang, “SDCoR: Software deﬁned
+cognitive routing for Internet of Vehicles,” IEEE Internet Things J.,
+vol. 5, no. 5, pp. 3513–3520, Oct. 2018.
+ZHAO ET AL.: ELITE: AN INTELLIGENT DIGITAL TWIN-BASED HIERARCHICAL ROUTING SCHEME FOR SOFTWARIZED VEHICULAR...
+5245
+Authorized licensed use limited to: University of Minnesota. Downloaded on September 14,2025 at 04:52:44 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+[10] J. Wang, K. Liu, K. Xiao, X. Wang, Q. Han, and V. C. S. Lee,
+“Delay-constrained routing via heterogeneous vehicular commu-
+nications in software deﬁned busnet,” IEEE Trans. Veh. Technol.,
+vol. 68, no. 6, pp. 5957–5970, Jun. 2019.
+[11] X. Zhang, X. Cao, L. Yan, and D. K. Sung, “A street-centric opportu-
+nistic routing protocol based on link correlation for urban
+VANETs,” IEEE Trans. Mobile Comput., vol. 15, no. 7, pp. 1586–1599,
+Jul. 2016.
+[12] Y. R. B. Al-Mayouf et al., “Real-time intersection-based segment
+aware routing algorithm for urban vehicular networks,” IEEE
+Trans. Intell. Transp. Syst., vol. 19, no. 7, pp. 2125–2141, Jul. 2018.
+[13] G. Sun, Y. Zhang, H. Yu, X. Du, and M. Guizani, “Intersection fog-
+based distributed routing for V2V communication in urban vehic-
+ular ad hoc networks,” IEEE Trans. Intell. Transp. Syst., vol. 21,
+no. 6, pp. 2409–2426, Jun. 2020.
+[14] L. Luo, L. Sheng, H. Yu, and G. Sun, “Intersection-based V2X rout-
+ing via reinforcement learning in vehicular ad hoc networks,”
+IEEE Trans. Intell. Transp. Syst., early access, Feb. 02, 2021,
+doi: 10.1109/TITS.2021.3053958.
+[15] M. Camelo, M. Claeys, and S. Latre, “Parallel reinforcement learning
+with minimal communication overhead for IoT environments,”
+IEEE Internet Things J., vol. 7, no. 2, pp. 1387–1400, Feb. 2020.
+[16] Y. Wu, K. Zhang, and Y. Zhang, “Digital twin networks: A survey,”
+IEEE Internet Things J., vol. 8, no. 18, pp. 13 789–13804, Sep. 2021.
+[17] Z. Wang et al., “A digital twin paradigm: Vehicle-to-cloud based
+advanced driver assistance systems,” in Proc. IEEE 91st Veh. Tech-
+nol. Conf., 2020, pp. 1–6.
+[18] P. Wang, N. Xu, W. Sun, G. Wang, and Y. Zhang, “Distributed
+incentives and digital twin for resource allocation in air-assisted
+Internet of Vehicles,” in Proc. IEEE Wireless Commun. Netw. Conf.,
+2021, pp. 1–6.
+[19] K. Zhang, J. Cao, S. Maharjan, and Y. Zhang, “Digital twin
+empowered content caching in social-aware vehicular edge
+networks,” IEEE Trans. Computat. Social Syst., vol. 9, no. 1,
+pp. 239–251, Feb. 2022.
+[20] X. Xu et al., “Service ofﬂoading with deep Q-network for digital
+twinning empowered Internet of Vehicles in edge computing,”
+IEEE Trans. Ind. Informat., vol. 18, no. 2, pp. 1414–1423, Feb. 2020.
+[21] K. Zhang, J. Cao, and Y. Zhang, “Adaptive digital twin and multi-
+agent deep reinforcement learning for vehicular edge computing and
+networks,” IEEE Trans. Ind. Informat., vol. 18, no. 2, pp. 1405–1413,
+Feb. 2021.
+[22] J. Liu, Y. Dong, Y. Liu, P. Li, S. Liu, and T. Wang, “Prediction
+study of the heavy vehicle driving state based on digital twin
+model,” in Proc. IEEE Int. Conf. Power Electron., Comput. Appl.,
+2021, pp. 789–797.
+[23] C. Hu et al., “A digital twin-assisted real-time trafﬁc data predic-
+tion method for 5G-enabled Internet of Vehicles,” IEEE Trans. Ind.
+Informat., vol. 18, no. 4, pp. 2811–2819, Apr. 2022.
+[24] L. Zhao, G. Han, Z. Li, and L. Shu, “Intelligent digital twin-based
+software-deﬁned vehicular networks,” IEEE Netw., vol. 34, no. 5,
+pp. 178–184, Sep./Oct. 2020.
+[25] Y. Gao, Z. Zhang, D. Zhao, Y. Zhang, and T. Luo, “A hierarchical
+routing scheme with load balancing in software deﬁned vehicular
+ad hoc networks,” IEEE Access, vol. 6, pp. 73 774–73 785, 2018.
+[26] C. Ghorai, S. Shakhari, and I. Banerjee, “ASPEA-based multimet-
+ric routing protocol for intelligent transportation systems,” IEEE
+Trans. Intell. Transp. Syst., vol. 22, no. 11, pp. 6737–6747, Nov. 2020.
+[27] A. Hawbani, E. Torbosh, X. Wang, P. Sincak, L. Zhao, and A. Al-
+Dubai, “Fuzzy-based distributed protocol for vehicle-to-vehicle
+communication,” IEEE Trans. Fuzzy Syst., vol. 29, no. 3, pp. 612–626,
+Mar. 2019.
+[28] C. Ghorai, S. Shakhari, and I. Banerjee, “A spea-based multimetric
+routing protocol for intelligent transportation systems,” IEEE
+Trans. Intell. Transp. Syst., vol. 22, no. 11, pp. 6737–6747, Nov. 2021.
+[29] X. M. Zhang, L. Yan, K. H. Chen, and D. K. Sung, “Fast, efﬁcient
+broadcast schemes based on the prediction of dynamics in vehicu-
+lar ad hoc networks,” IEEE Trans. Intell. Transp. Syst., vol. 21, no. 2,
+pp. 531–542, Feb. 2020.
+[30] G. Sun, Y. Zhang, D. Liao, H. Yu, X. Du, and M. Guizani, “Bus-tra-
+jectory-based street-centric routing for message delivery in urban
+vehicular ad hoc networks,” IEEE Trans. Veh. Technol., vol. 67,
+no. 8, pp. 7550–7563, Aug. 2018.
+[31] K. Z. Ghafoor, L. Kong, D. B. Rawat, E. Hosseini, and A. S. Sadiq,
+“Quality of service aware routing protocol in software-deﬁned Inter-
+net of Vehicles,” IEEE Internet Things J., vol. 6, no. 2, pp. 2817–2828,
+Apr. 2019.
+[32] K. Mershad, “SURFER: A secure SDN-based routing protocol
+for Internet of Vehicles,” IEEE Internet Things J., vol. 8, no. 9,
+pp. 7407–7422, May 2021.
+[33] K. L. K. Sudheera, M. Ma, and P. H. J. Chong, “Link stability based
+optimized routing framework for software deﬁned vehicular
+networks,” IEEE Trans. Veh. Technol., vol. 68, no. 3, pp. 2934–2945,
+Mar. 2019.
+[34] O. Alzamzami and I. Mahgoub, “Fuzzy logic-based geographic
+routing for urban vehicular networks using link quality and
+achievable throughput estimations,” IEEE Trans. Intell. Transp.
+Syst., vol. 20, no. 6, pp. 2289–2300, Jun. 2019.
+[35] Z. Cao, B. N. Silva, M. Diyan, J. Li, and K. Han, “Intersection rout-
+ing based on fuzzy multi-factor decision for vanets,” Appl. Sci.,
+vol. 10, no. 18, 2020, Art. no. 6613.
+[36] F. Li, X. Song, H. Chen, X. Li, and Y. Wang, “Hierarchical routing
+for vehicular ad hoc networks via reinforcement learning,” IEEE
+Trans. Veh. Technol., vol. 68, no. 2, pp. 1852–1865, Feb. 2019.
+[37] C. Wu, T. Yoshinaga, Y. Ji, and Y. Zhang, “Computational intelligence
+inspired data delivery for vehicle-to-roadside communications,” IEEE
+Trans. Veh. Technol., vol. 67, no. 12, pp. 12038–12048, Dec. 2018.
+[38] M. A. Al-Jarrah, A. Al-Dweik, M. Kalil, and S. S. Ikki, “Decision
+fusion in distributed cooperative wireless sensor networks,” IEEE
+Trans. Veh. Technol., vol. 68, no. 1, pp. 797–811, Jan. 2019.
+[39] J. Liu, J. Huang, R. Sun, H. Yu, and R. Xiao, “Data fusion for multi-
+source sensors using GA-PSO-BP neural network,” IEEE Trans.
+Intell. Transp. Syst., vol. 22, no. 10, pp. 6583–6598, Oct. 2021.
+[40] P. Wang, W. Hao, and Y. Jin, “Fine-grained trafﬁc ﬂow prediction
+of various vehicle types via fusion of multisource data and deep
+learning approaches,” IEEE Trans. Intell. Transp. Syst., vol. 22,
+no. 11, pp. 6921–6930, Nov. 2021.
+[41] K. N. Qureshi, M. Ahmed, G. Jeon, and F. Piccialli, “An enhanced
+multi-hop intersection-based geographical routing protocol for
+the internet of connected vehicles network,” IEEE Trans. Intell.
+Transp. Syst., vol. 22, no. 6, pp. 3850–3858, Jun. 2021.
+Liang Zhao (Member, IEEE) received the PhD
+degree from the School of Computing, Edinburgh
+Napier University, in 2011. He is currently a profes-
+sor with Shenyang Aerospace University, China.
+His research interests include ITS, VANET, WMN,
+and SDN. He has published more than 120 papers.
+He served as the chair of several international con-
+ferences and workshops, including 2022 IEEE Big-
+DataSE (steering co-chair), 2021 IEEE TrustCom
+(program co-chair), 2019 IEEE IUCC (program co-
+chair), and 2018-2021 NGDN workshop (founder).
+He was the recipient of the best/outstanding paper awards with 2015 IEEE
+IUCC, 2020 IEEE ISPA, and 2013 ACM MoMM.
+Zhenguo Bi received the BSc degree from She-
+nyang Aerospace University. He is currently work-
+ing toward the master’s degree with Shenyang
+Aerospace
+University,
+Shenyang,
+China.
+His
+research interests include ITS, VANET, and SDN.
+Ammar Hawbani received the BS, MS, and PhD
+degrees in computer software and theory from
+University of Science and Technology of China, in
+2009, 2012, and 2016, respectively. He is cur-
+rently an associate professor of networking and
+communication algorithms with the School of
+Computer Science and Technology, University of
+Science and Technology of China. From 2016 to
+2019, he worked as postdoctoral researcher with
+the School of Computer Science and Technology,
+University of Science and Technology of China.
+His research interests include IoT, WSNs, WBANs, WMNs, VANETs,
+and SDN letters.
+5246
+IEEE TRANSACTIONS ON MOBILE COMPUTING, VOL. 22, NO. 9, SEPTEMBER 2023
+Authorized licensed use limited to: University of Minnesota. Downloaded on September 14,2025 at 04:52:44 UTC from IEEE Xplore.  Restrictions apply. 
+
+
+Keping Yu (Member, IEEE) received the ME
+and PhD degrees from the Graduate School of
+Global Information and Telecommunication Stud-
+ies, Waseda University, Tokyo, Japan, in 2012
+and 2016, respectively. He was a research associ-
+ate, junior researcher, and researcher with the
+Global Information and Telecommunication Insti-
+tute, Waseda University, from 2015 to 2019, 2019
+to 2020, and 2020 to 2022, respectively. He is cur-
+rently an associate professor with Hosei University
+and a visiting scientist with the RIKEN Center for
+Advanced Intelligence Project, Japan. He has hosted and participated in
+more than ten projects, is involved in many standardization activities orga-
+nized by ITU-Tand ICNRG of IRTF, and has contributed to ITU-T Standards
+Y.3071 and Supplement 35. He received the IEEE Outstanding Leadership
+Award from IEEE BigDataSE 2021, the Best Paper Award from IEEE Con-
+sumer Electronics Magazine Award 2022 (ﬁrst Place Winner), IEEE
+ICFTIC 2021, ITU Kaleidoscope 2020, the Student Presentation Award
+from JSST 2014. He has authored 100+ publications including papers in
+prestigious journal/conferences such as the IEEE Wireless Communica-
+tions, IEEE Communications Magazine, IEEE Network Magazine, IEEE
+Internet of Things Journal, IEEE Transactions on Fuzzy Systems, IEEE
+Transactions on Industrial Informatics, IEEE Transactions on Intelligent
+Transportation Systems, IEEE Transactions on Vehicular Technology,
+IEEE Transactions on Mobile Computing, Journal of Biomedical and Health
+Informatics, IEEE Transactions on Reliability, IEEE Transactions on Com-
+munications, IEEE Transactions on Network and Service Management,
+IEEE Transactions on Instrumentation and Measurement, IEEE Transac-
+tions on Network Science and Engineering, IEEE Transactions on Green
+Communications and Networking, IEEE Transactions on Computational
+Social Systems, IEEE Consumer Electronics Magazine, IEEE Internet of
+Things Magazine, ICC, GLOBECOM etc. He is also an associate editor of
+IEEE Open Journal of Vehicular Technology, Journal of Intelligent
+Manufacturing, Journal of Circuits, Systems and Computers. He has been
+a guest editor for more than 20 journals such as IEEE Transactions on
+Computational Social Systems. He served as general co-chair and public-
+ity co-chair of the IEEE VTC2020-Spring 1st EBTSRA workshop, general
+co-chair of IEEE ICCC2020 2nd EBTSRA workshop, general co-chair of
+IEEE TrustCom2021 3nd EBTSRA workshop, session chair of IEEE
+ICCC2020, ITU Kaleidoscope 2016. His research interests include smart
+grids, information-centric networking, Internet of Things, artiﬁcial intelli-
+gence, blockchain, and information security.
+Yan Zhang (Fellow, IEEE) is currently a full profes-
+sor with the University of Oslo. He is also an editor
+of several IEEE publications, including IEEE Com-
+munications
+Magazine,
+IEEE
+Network,
+IEEE
+Transactions on Green Communications and Net-
+working, IEEE Communications Surveys and Tuto-
+rials, and the IEEE Internet of Things Journal. His
+current research interests include next generation
+wireless networks leading to 5G and cyber physical
+systems. He is a fellow of IET, an elected member
+of Academia Europaea, an elected member of the
+Royal Norwegian Society of Sciences and Letters (DKNVS), and an
+elected member of the Norwegian Academy of Technological Sciences.
+Mohsen Guizani (Fellow, IEEE) received the BS
+(with distinction), MS, and PhD degrees in electrical
+and computer engineering from Syracuse Univer-
+sity, Syracuse, New York. He is currently a profes-
+sor and the associate provost with Mohamed
+Bin
+Zayed
+University of
+Artiﬁcial
+Intelligence
+(MBZUAI), Abu Dhabi, UAE. Previously, he worked
+in different institutions in the USA. His research
+interests include applied machine learning and arti-
+ﬁcial intelligence, Internet of Things (IoT), intelligent
+systems, smart city, and cybersecurity. He was
+listed as a clarivate analytics highly cited researcher in computer science,
+in 2019, 2020, and 2021, respectively. He has won several research awards
+including the “2015 IEEE Communications Society Best Survey Paper
+Award” as well 4 best paper awards from ICC and Globecom Conferences.
+He is the author of ten books and more than 800 publications. He is also
+the recipient of the 2017 IEEE Communications Society Wireless Technical
+Committee (WTC) Recognition Award, the 2018 AdHoc Technical Commit-
+tee Recognition Award, and the 2019 IEEE Communications and Informa-
+tion Security Technical Recognition (CISTC) Award.
+" For more information on this or any other computing topic,
+please visit our Digital Library at www.computer.org/csdl.
+ZHAO ET AL.: ELITE: AN INTELLIGENT DIGITAL TWIN-BASED HIERARCHICAL ROUTING SCHEME FOR SOFTWARIZED VEHICULAR...
+5247
+Authorized licensed use limited to: University of Minnesota. Downloaded on September 14,2025 at 04:52:44 UTC from IEEE Xplore.  Restrictions apply. 
